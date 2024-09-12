@@ -41,7 +41,7 @@ shape = SubResource("ConcavePolygonShape3D_e4f2w")
 transform = Transform3D(0.990715, 0, 0.135958, 0, 1, 0, -0.135958, 0, 0.990715, -5.81242, 21.0124, -71.8632)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D5"]
-transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+transform = Transform3D(10, -1.49032e-09, 4.07406e-12, 0, 8.73062e-05, -10, -1.79231e-07, 1, 0.000873023, 0.319419, 0, -2.32757)
 mesh = SubResource("TorusMesh_stm1u")
 skeleton = NodePath("../../StaticBody3D5")
 
