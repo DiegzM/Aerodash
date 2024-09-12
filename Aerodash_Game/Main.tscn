@@ -36,12 +36,13 @@ mesh = SubResource("TorusMesh_stm1u")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D4"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
 
 [node name="StaticBody3D5" type="StaticBody3D" parent="."]
 transform = Transform3D(0.990715, 0, 0.135958, 0, 1, 0, -0.135958, 0, 0.990715, -5.81242, 21.0124, -71.8632)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D5"]
-transform = Transform3D(10, -1.49032e-09, 4.07406e-12, 0, 8.73062e-05, -10, -1.79231e-07, 1, 0.000873023, 0.602887, 0, -0.652634)
+transform = Transform3D(10, -1.49032e-09, 4.07406e-12, 0, 8.73062e-05, -10, -1.79231e-07, 1, 0.000873023, 0.785115, 1.90735e-06, 0.424118)
 mesh = SubResource("TorusMesh_stm1u")
 skeleton = NodePath("../../StaticBody3D5")
 
