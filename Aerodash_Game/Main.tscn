@@ -65,20 +65,21 @@ light_indirect_energy = 0.434
 
 [node name="Player" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 6.05894, 2.08165e-12)
+center_of_mass_mode = 1
 script = ExtResource("3_jc0hv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
-transform = Transform3D(-1, 1.74393e-16, -3.49691e-07, 6.97574e-16, 0.25, -2.7903e-15, 8.74228e-08, -1.74393e-16, -4, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+transform = Transform3D(-0.994803, 1.73487e-16, -3.47874e-07, 6.93949e-16, 0.248701, -2.7758e-15, 8.69685e-08, -1.73487e-16, -3.97921, 2.08165e-12, 0, 2.08165e-12)
 shape = SubResource("BoxShape3D_s200c")
 
-[node name="ForcePivot" type="Node3D" parent="Player"]
+[node name="Pivot" type="Node3D" parent="Player"]
 transform = Transform3D(-1, 1.74393e-16, -3.49691e-07, 6.97574e-16, 0.25, -2.7903e-15, 8.74228e-08, -1.74393e-16, -4, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_it8o3")
 
-[node name="Camera3D" type="Camera3D" parent="Player/ForcePivot"]
+[node name="Camera3D" type="Camera3D" parent="Player/Pivot"]
 transform = Transform3D(-1, 8.71945e-17, -3.49691e-07, 3.48787e-16, 4, -2.23224e-14, 8.74228e-08, -1.39515e-15, -0.25, 8.91275e-07, 4, -1.21175)
 
 [node name="Cube" type="MeshInstance3D" parent="Player"]
-transform = Transform3D(-1, 1.8691e-10, -3.49678e-07, 6.91583e-16, 0.249991, 0.034208, 8.74228e-08, 0.002138, -3.99985, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+transform = Transform3D(-1, 1.8691e-10, -3.49678e-07, 6.91583e-16, 0.249991, 0.034208, 8.74228e-08, 0.002138, -3.99985, 2.08165e-12, 0, 2.08165e-12)
 mesh = SubResource("BoxMesh_1iy1k")
 skeleton = NodePath("")
