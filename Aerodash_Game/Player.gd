@@ -1,32 +1,16 @@
 extends "res://BaseCharacter.gd"
 
 const MOUSE_SENSITIVITY = 0.3
-
-@onready var INGAME = true
-@onready var mouse_delta: Vector2 = Vector2.ZERO
+var camera: Node3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	camera = get_parent().get_node("Camera")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):
-	# Toggle between mouse captured and visible modes with ESC key
-	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		toggle_mouse_mode()
-	
-	# Capture mouse motion when the game is in focus (INGAME)
-	if event is InputEventMouseMotion and INGAME:
-		mouse_delta = event.relative
-
-# Toggle mouse mode between captured (for gameplay) and visible (for menus)
-func toggle_mouse_mode():
-	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		INGAME = false
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		INGAME = true
+	pass
 
 # Get the player's input for movement
 func get_input_vector() -> Vector3:
@@ -49,8 +33,9 @@ func get_input_vector() -> Vector3:
 
 # Get the player's input for rotation based on mouse movement
 func get_input_rotation() -> Vector3:
-	var input_rotation = Vector3.ZERO
-	input_rotation.y = -mouse_delta.x * MOUSE_SENSITIVITY
-	input_rotation.x = mouse_delta.y * MOUSE_SENSITIVITY
-	
-	return input_rotation
+	var input_rotation = camera.global_transform.basis.get_euler()
+	return Vector3(
+		rad_to_deg(input_rotation.x),
+		rad_to_deg(input_rotation.y),
+		rad_to_deg(input_rotation.z)
+	)

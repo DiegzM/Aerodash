@@ -5,7 +5,7 @@ extends RigidBody3D
 const ACCELERATION = Vector3(60, 60, 60) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const MAX_SPEED = Vector3(100, 100, 100) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
 
-#DAMPENING
+# DAMPING
 const MOVEMENT_DAMPING = 0.95 # Closer to 1 is slower
 const ROTATION_DAMPING = 0.9 # Closer to 1 is slower
 ##################################
@@ -14,12 +14,13 @@ const ROTATION_DAMPING = 0.9 # Closer to 1 is slower
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _integrate_forces(state):
 	apply_movement(state)
 	apply_rotation(state)
+	pass
 
 # Calculates movement
 func apply_movement(state):
@@ -42,13 +43,17 @@ func apply_movement(state):
 	apply_force(local_force)
 
 func apply_rotation(state):
-	var local_rotation = get_input_rotation()
-	if local_rotation != Vector3.ZERO:
-		print("true")
-		rotation_degrees.y += local_rotation.y
-		rotation_degrees.x += -local_rotation.x
-	else:
-		pass
+	# Get the current rotation and the target rotation
+	var current_rotation = rotation_degrees
+	var target_rotation = get_input_rotation()
+
+	# Interpolate the rotation along each axis using lerp_angle for smooth transitions
+	#current_rotation.x = lerp_angle(current_rotation.x, target_rotation.x, ROTATION_DAMPING)
+	#current_rotation.y = lerp_angle(current_rotation.y, target_rotation.y, ROTATION_DAMPING)
+	#current_rotation.z = lerp_angle(current_rotation.z, target_rotation.z, ROTATION_DAMPING)
+
+	# Apply the new interpolated rotation to the RigidBody
+	#rotation_degrees = target_rotation
 	
 # Placeholder method, to be implemented by subclasses (Player or AI)
 func get_input_vector() -> Vector3:
