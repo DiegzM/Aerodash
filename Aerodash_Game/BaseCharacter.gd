@@ -2,7 +2,7 @@ extends RigidBody3D
 
 ########## SETTINGS ##############
 # SPEEDS
-const ACCELERATION = Vector3(60, 60, 60) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
+const ACCELERATION = Vector3(120, 120, 120) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const MAX_SPEED = Vector3(100, 100, 100) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
 
 # DAMPING
@@ -44,16 +44,10 @@ func apply_movement(state):
 
 func apply_rotation(state):
 	# Get the current rotation and the target rotation
-	var current_rotation = rotation_degrees
+	#var current_rotation = rotation_degrees
 	var target_rotation = get_input_rotation()
 
-	# Interpolate the rotation along each axis using lerp_angle for smooth transitions
-	#current_rotation.x = lerp_angle(current_rotation.x, target_rotation.x, ROTATION_DAMPING)
-	#current_rotation.y = lerp_angle(current_rotation.y, target_rotation.y, ROTATION_DAMPING)
-	#current_rotation.z = lerp_angle(current_rotation.z, target_rotation.z, ROTATION_DAMPING)
-
-	# Apply the new interpolated rotation to the RigidBody
-	#rotation_degrees = target_rotation
+	global_rotation = target_rotation
 	
 # Placeholder method, to be implemented by subclasses (Player or AI)
 func get_input_vector() -> Vector3:

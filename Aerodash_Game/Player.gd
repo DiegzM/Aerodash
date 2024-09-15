@@ -1,11 +1,11 @@
 extends "res://BaseCharacter.gd"
 
 const MOUSE_SENSITIVITY = 0.3
-var camera: Node3D
+var pivot: Node3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	camera = get_parent().get_node("Camera")
+	pivot = get_parent().get_node("CameraPivot")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 # Handle input events like mouse motion and toggling mouse lock
@@ -33,9 +33,5 @@ func get_input_vector() -> Vector3:
 
 # Get the player's input for rotation based on mouse movement
 func get_input_rotation() -> Vector3:
-	var input_rotation = camera.global_transform.basis.get_euler()
-	return Vector3(
-		rad_to_deg(input_rotation.x),
-		rad_to_deg(input_rotation.y),
-		rad_to_deg(input_rotation.z)
-	)
+	var input_rotation = pivot.global_rotation
+	return input_rotation
