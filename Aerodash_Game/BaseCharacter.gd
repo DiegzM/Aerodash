@@ -13,35 +13,37 @@ const ROTATION_DAMPING = 0.9 # Closer to 1 is slower
 const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = faster
 ##################################
 
-@onready var target_rotation = rotation_degrees
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _integrate_forces(state):
-	apply_movement(state)
 	apply_rotation(state)
-	pass
-
+	apply_movement(state)
+	
 # Calculates movement
 func apply_movement(state):
-	var local_force = Vector3.ZERO
+	var input_vector = get_input_vector()
+
+	var local_force = Vector3(
+		input_vector.x * ACCELERATION.x,
+		input_vector.y * ACCELERATION.y,
+		input_vector.z * ACCELERATION.z
+	)
+
+	# Apply damping to local velocity if no input is present
+	if input_vector.x == 0:
+		state.linear_velocity.x *= MOVEMENT_DAMPING
+	if input_vector.y == 0:
+		state.linear_velocity.y *= MOVEMENT_DAMPING
+	if input_vector.z == 0:
+		state.linear_velocity.z *= MOVEMENT_DAMPING
 	
-	# Calculate based on direction input
-	if get_input_vector() != Vector3.ZERO:
-		local_force = get_input_vector() * ACCELERATION
-	else:
-		# Apply damping to gradually reduce the velocity when no input
-		state.linear_velocity *= MOVEMENT_DAMPING
-	
-	# Clamp velocity inline
-	var velocity = state.linear_velocity
-	velocity.x = clamp(velocity.x, -MAX_SPEED.x, MAX_SPEED.x)
-	velocity.y = clamp(velocity.y, -MAX_SPEED.y, MAX_SPEED.y)
-	velocity.z = clamp(velocity.z, -MAX_SPEED.z, MAX_SPEED.z)
-	state.linear_velocity = velocity
+	# Clamp velocity
+	var speed = state.linear_velocity.length()
+
+	if speed > MAX_SPEED.length():
+		state.linear_velocity = state.linear_velocity.normalized() * MAX_SPEED.length()
 	
 	apply_force(local_force)
 

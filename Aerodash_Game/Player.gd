@@ -29,24 +29,24 @@ func _physics_process(delta):
 	current_roll_speed = lerp(current_roll_speed, target_roll_speed, roll_smoothness * delta)
 
 	if current_roll_speed != 0.0:
-		var z_axis = pivot.global_transform.basis.z.normalized()
-		pivot.global_transform.basis = Basis(z_axis, current_roll_speed * delta) * pivot.global_transform.basis
+		pivot.rotate_object_local(Vector3(0, 0, 1), current_roll_speed * delta)
+		
 # Get the player's input for movement
 func get_input_vector() -> Vector3:
 	var direction = Vector3.ZERO
 
 	if Input.is_action_pressed("move_forward"):
-		direction -= transform.basis.z
+		direction -= pivot.transform.basis.z
 	if Input.is_action_pressed("move_backward"):
-		direction += transform.basis.z
+		direction += pivot.transform.basis.z
 	if Input.is_action_pressed("move_left"):
-		direction -= transform.basis.x
+		direction -= pivot.transform.basis.x
 	if Input.is_action_pressed("move_right"):
-		direction += transform.basis.x
+		direction += pivot.transform.basis.x
 	if Input.is_action_pressed("move_up"):
-		direction += transform.basis.y
+		direction += pivot.transform.basis.y
 	if Input.is_action_pressed("move_down"):
-		direction -= transform.basis.y
+		direction -= pivot.transform.basis.y
 
 	return direction.normalized()
 

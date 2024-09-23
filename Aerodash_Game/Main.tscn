@@ -1,7 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://1g8g10ir4k70"]
+[gd_scene load_steps=22 format=3 uid="uid://1g8g10ir4k70"]
 
 [ext_resource type="Script" path="res://CameraPivot.gd" id="1_lj8ue"]
+[ext_resource type="Script" path="res://AI.gd" id="1_s3qo3"]
 [ext_resource type="Script" path="res://BaseCharacter.gd" id="1_st3f7"]
+[ext_resource type="Script" path="res://SpeedDirection.gd" id="2_c0kq7"]
 [ext_resource type="Script" path="res://Player.gd" id="3_jc0hv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pfqw3"]
@@ -33,6 +35,10 @@ albedo_color = Color(0.145098, 0.113725, 0.180392, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_41tv2"]
 size = Vector3(10, 1, 20)
 
+[sub_resource type="BoxMesh" id="BoxMesh_w1o3i"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4jwbe"]
+
 [sub_resource type="SphereMesh" id="SphereMesh_hteft"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uvorh"]
@@ -40,9 +46,10 @@ albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_yepav"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_w1o3i"]
+[sub_resource type="BoxMesh" id="BoxMesh_v63xt"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_4jwbe"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3skfh"]
+albedo_color = Color(1, 1, 0, 1)
 
 [sub_resource type="TorusMesh" id="TorusMesh_11i25"]
 
@@ -62,7 +69,7 @@ environment = SubResource("Environment_3e6wc")
 transform = Transform3D(6.99011, 0, 0, 0, 1, 0, 0, 0, 7.65926, 0, 0, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-transform = Transform3D(216, 0, 0, 0, 1, 0, 0, 0, 341.007, 0.324848, -0.829893, 0.459507)
+transform = Transform3D(2000, 0, 0, 0, 1, 0, 0, 0, 2000, 0.324848, -0.829893, 0.459507)
 mesh = SubResource("BoxMesh_q5xt0")
 surface_material_override/0 = SubResource("StandardMaterial3D_825ny")
 
@@ -76,6 +83,20 @@ light_color = Color(0.87451, 0.882353, 0.968627, 1)
 light_energy = 1.281
 light_indirect_energy = 1.242
 light_volumetric_fog_energy = 1.242
+
+[node name="AI" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 41.0166, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+disabled = true
 
 [node name="PlayerInterface" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 41.0166, 0)
@@ -95,8 +116,18 @@ transform = Transform3D(0.518457, 0, 0, 0, 0.0987755, 0, 0, 0, 1, 0.0185452, 0.3
 mesh = SubResource("BoxMesh_yepav")
 surface_material_override/0 = SubResource("StandardMaterial3D_uvorh")
 
+[node name="RigidBody3D" type="RigidBody3D" parent="PlayerInterface/CameraPivot"]
+script = ExtResource("2_c0kq7")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="PlayerInterface/CameraPivot/RigidBody3D"]
+transform = Transform3D(0.0950541, 0, 0, 0, 0.437406, 0, 0, 0, 4.27272, 2.08165e-12, 0, 2.08165e-12)
+mesh = SubResource("BoxMesh_v63xt")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_3skfh")
+
 [node name="Player" type="RigidBody3D" parent="PlayerInterface"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+gravity_scale = 1.66533e-16
 script = ExtResource("3_jc0hv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerInterface/Player"]
@@ -110,227 +141,401 @@ shape = SubResource("BoxShape3D_4jwbe")
 disabled = true
 
 [node name="BaseCharacter" type="RigidBody3D" parent="."]
+gravity_scale = 1.66533e-16
 script = ExtResource("1_st3f7")
 
 [node name="Gates" type="Node3D" parent="."]
 
-[node name="StaticBody3D4" type="StaticBody3D" parent="Gates"]
+[node name="Track 1" type="Node3D" parent="Gates"]
+
+[node name="StaticBody3D4" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -0.30806, 44.958, -58.0507)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D4"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D4"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D4"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D20" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D20" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -0.30806, 44.958, 89.6208)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D20"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D20"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D20"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D20"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D5" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D5" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 3.29323, -1.18518, 0, 1.18518, 3.29323, -0.30806, 91.9885, -170.481)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D5"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D5"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D5"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D5"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D6" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D6" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 2.5457, -2.40196, 0, 2.40196, 2.5457, -0.30806, 162.235, -273.97)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D6"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D6"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D6"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D6"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D7" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D7" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 1.58194, -3.12209, 0, 3.12209, 1.58194, -0.30806, 273.601, -323.47)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D7"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D7"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D7"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D7"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D8" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D8" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 0.393844, -3.47777, 0, 3.47777, 0.393844, -0.30806, 423.316, -352.999)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D8"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D8"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D8"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D8"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D9" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D9" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -0.807076, -3.40568, 0, 3.40568, -0.807076, -0.30806, 540.325, -318.919)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D9"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D9"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D9"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D9"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D10" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D10" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -2.10025, -2.79981, 0, 2.79981, -2.10025, -0.30806, 651.062, -260.764)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D10"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D10"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D10"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D10"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D11" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D11" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -2.92425, -1.92321, 0, 1.92321, -2.92425, -0.30806, 712.778, -155.676)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D11"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D11"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D11"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D11"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D12" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D12" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -3.4269, -0.71161, 0, 0.71161, -3.4269, -0.339844, 742.286, -24.9009)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D12"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D12"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D12"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D12"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D13" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D13" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -3.46541, 0.490856, 0, -0.490856, -3.46541, -0.339844, 719.097, 94.7432)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D13"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D13"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D13"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D13"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D14" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D14" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -2.98089, 1.83421, 0, -1.83421, -2.98088, -0.339844, 671.359, 210.353)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D14"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D14"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D14"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D14"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D15" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D15" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -2.18367, 2.73525, 0, -2.73525, -2.18367, -0.339844, 572.383, 281.461)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D15"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D15"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D15"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D15"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D16" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D16" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, -1.09271, 3.32505, 0, -3.32505, -1.09271, -0.339844, 431.798, 340.814)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D16"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D16"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D16"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D16"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D17" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D17" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 0.0977865, 3.49863, 0, -3.49863, 0.0977862, -0.339844, 310.305, 331.235)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D17"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D17"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D17"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D17"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D18" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D18" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 1.48713, 3.16835, 0, -3.16835, 1.48713, -0.339844, 190.057, 296.81)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D18"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D18"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D18"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D18"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
 
-[node name="StaticBody3D19" type="StaticBody3D" parent="Gates"]
+[node name="StaticBody3D19" type="StaticBody3D" parent="Gates/Track 1"]
 transform = Transform3D(3.5, 0, 0, 0, 2.47215, 2.47759, 0, -2.47759, 2.47215, -0.339844, 108.263, 206.464)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/StaticBody3D19"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 1/StaticBody3D19"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 mesh = SubResource("TorusMesh_11i25")
 surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/StaticBody3D19"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 1/StaticBody3D19"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="Track 2" type="Node3D" parent="Gates"]
+
+[node name="StaticBody3D4" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -376.798, 44.958, 86.2695)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D4"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D4"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D5" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, 2.94321, 1.89408, 0, -1.89408, 2.94321, -376.798, 90.4503, 199.924)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D5"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D5"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D6" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, 1.72162, 3.0473, 0, -3.0473, 1.72162, -376.798, 194.586, 303.468)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D6"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D6"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D7" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, -0.201352, 3.4942, 0, -3.4942, -0.201352, -376.798, 315.918, 319.766)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D7"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D7"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D8" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, -3.4979, 0.121232, 0, -0.121232, -3.4979, -376.765, 714.252, 560.181)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D8"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D8"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D12" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(0.585136, -0.119526, -3.44867, -4.03004e-17, -3.4979, 0.121232, -3.45074, -0.0202678, -0.584785, -291.303, 714.252, 673.679)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D12"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D12"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D13" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.49983, 0.001187, 0.0342483, -7.53005e-10, -3.4979, 0.121232, 0.0342688, -0.121227, -3.49773, -190.308, 714.252, 791.683)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D13"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D13"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D14" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(-2.80778, -0.0723786, -2.08833, -3.46754e-17, -3.4979, 0.121232, -2.08958, 0.0972555, 2.8061, -243.601, 711.03, 1205)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D14"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D14"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D15" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(-2.52958, 0.0837864, 2.41748, -7.53005e-10, -3.4979, 0.121232, 2.41893, 0.0876193, 2.52807, -244.4, 711.03, 1062.92)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D15"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D15"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D16" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(-2.78719, -0.0733273, -2.1157, -7.2806e-10, -3.4979, 0.121232, -2.11697, 0.0965422, 2.78552, -254.97, 711.03, 907.961)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D16"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D16"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D9" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, -3.00705, -1.791, 0, 1.791, -3.00705, -376.765, 672.723, 445.019)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D9"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D9"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D10" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, -1.82614, -2.98584, 0, 2.98584, -1.82614, -376.765, 572.237, 337.93)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D10"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D10"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_e4f2w")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D11" type="StaticBody3D" parent="Gates/Track 2"]
+transform = Transform3D(3.5, 0, 0, 0, 0.0801994, -3.49908, 0, 3.49908, 0.0801994, -376.765, 451.542, 317.44)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Gates/Track 2/StaticBody3D11"]
+transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
+mesh = SubResource("TorusMesh_11i25")
+surface_material_override/0 = SubResource("StandardMaterial3D_7f7my")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gates/Track 2/StaticBody3D11"]
 transform = Transform3D(10, 0, 0, 0, 8.73062e-05, -10, 0, 1, 0.000873023, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_e4f2w")
 metadata/_edit_group_ = true
