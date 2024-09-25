@@ -24,4 +24,4 @@ func get_input_vector() -> Vector3:
 
 # Get the player's input for rotation based on mouse movement
 func get_input_rotation() -> Vector3:
-	return Vector3(0,0,0)
+	return global_rotation + Vector3(0,0.05,0)

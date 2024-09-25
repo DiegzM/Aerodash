@@ -1,7 +1,7 @@
 extends "res://BaseCharacter.gd"
 
 const MOUSE_SENSITIVITY = 0.3
-@export var roll_speed: float = 5.0
+@export var roll_speed: float = 4.0
 @export var roll_smoothness: float = 3
 
 @onready var current_roll_speed: float = 0
@@ -49,8 +49,14 @@ func get_input_vector() -> Vector3:
 		direction -= pivot.transform.basis.y
 
 	return direction.normalized()
+	
+func _on_section_boundary_exited(body):
+	if body == self:  # Ensure that the body that exited is this BaseCharacter
+		pivot.global_rotation = current_gate.global_rotation
+		global_transform = current_gate.global_transform
+		linear_velocity = Vector3.ZERO
+	
 
-# Get the player's input for rotation based on mouse movement
 func get_input_rotation() -> Vector3:
 	var input_rotation = pivot.global_rotation
 	return input_rotation

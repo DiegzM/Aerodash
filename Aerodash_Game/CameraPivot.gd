@@ -1,6 +1,6 @@
 extends Node3D
 
-@export var max_fov = 130
+@export var max_fov = 125
 @export var min_fov = 75
 @export var max_fov_speed = 100
 

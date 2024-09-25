@@ -1,17 +1,22 @@
+class_name BaseCharacter
 extends RigidBody3D
 
 ########## SETTINGS ##############
 # SPEEDS
-const ACCELERATION = Vector3(240, 240, 240) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
-const MAX_SPEED = Vector3(100, 100, 100) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
+const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
+const MAX_SPEED = Vector3(80, 80, 80) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
 
 # DAMPING
 const MOVEMENT_DAMPING = 0.95 # Closer to 1 is slower
-const ROTATION_DAMPING = 0.9 # Closer to 1 is slower
+const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
 
 # ROTATION SMOOTHNESS
 const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = faster
 ##################################
+
+var previous_section = null
+var current_section = null
+var current_gate = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -59,7 +64,29 @@ func apply_rotation(state):
 
 	# Apply the new smooth rotation
 	global_rotation = current_rotation
-	
+
+func on_section_passed(gate: Node3D):
+	if current_gate != gate:
+		previous_section = current_section
+		current_section = gate.get_parent()
+		current_gate = gate
+		
+		if previous_section and previous_section.has_node("SectionBoundary"):
+			var prev_boundary = previous_section.get_node("SectionBoundary")
+			if prev_boundary.body_exited.is_connected(_on_section_boundary_exited):
+				prev_boundary.body_exited.disconnect(_on_section_boundary_exited)
+
+		if current_section.has_node("SectionBoundary"):
+			print(current_section.get_node("SectionBoundary"))
+			var boundary = current_section.get_node("SectionBoundary")
+			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
+				boundary.body_exited.connect(_on_section_boundary_exited)
+
+func _on_section_boundary_exited(body):
+	if body == self:  # Ensure that the body that exited is this BaseCharacter
+		global_transform = current_gate.global_transform
+		linear_velocity = Vector3.ZERO
+		
 # Placeholder method, to be implemented by subclasses (Player or AI)
 func get_input_vector() -> Vector3:
 	return Vector3.ZERO
