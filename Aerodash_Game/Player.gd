@@ -18,6 +18,8 @@ func _input(event):
 	pass
 
 func _physics_process(delta):
+	print(current_section_index)
+	print(lap)
 	var target_roll_speed = 0.0
 
 	if Input.is_action_pressed("roll_left"):

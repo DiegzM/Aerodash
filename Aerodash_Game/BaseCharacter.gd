@@ -18,12 +18,12 @@ const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = 
 var track = null
 var previous_section = null
 var current_section = null
-var current_section_index = 0
+var current_section_index = -1
 var current_gate = null
 var track_sections: Array = []
 var next_gate = null
 
-var lap = 0
+var lap = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -32,8 +32,8 @@ func _ready():
 		for i in range(track.get_child_count()):
 			track_sections.append(track.get_child(i))
 		if track.get_child_count() > 1:
-			next_gate = track.get_child(1).get_node("Gate")
-		var start_track_node = track.get_node("0")
+			next_gate = track.get_child(0).get_node("Gate")
+		var start_track_node = track.get_child(track.get_child_count() - 1)
 		if start_track_node:
 			current_section = start_track_node
 			current_gate = start_track_node.get_node("Gate")
@@ -89,9 +89,6 @@ func on_section_passed(gate: Node3D):
 		current_section = gate.get_parent()
 		current_gate = gate
 		
-		if current_section.name == "1":
-			lap += 1
-		
 		if previous_section and previous_section.has_node("SectionBoundary"):
 			var prev_boundary = previous_section.get_node("SectionBoundary")
 			if prev_boundary.body_exited.is_connected(_on_section_boundary_exited):
@@ -105,6 +102,7 @@ func on_section_passed(gate: Node3D):
 		current_section_index += 1
 		if current_section_index >= track.get_child_count():
 			current_section_index = 0
+			lap += 1
 			
 		if current_section_index + 1 < track.get_child_count():
 			next_gate = track.get_child(current_section_index + 1).get_node("Gate")

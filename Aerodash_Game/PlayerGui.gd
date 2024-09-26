@@ -13,5 +13,6 @@ func _ready():
 func _process(delta):
 	place = race_manager.get_place(player)
 	racer_count = race_manager.get_racer_count()
-	$Place.text = str(place)
-	$PlaceRacerCount.text = str(racer_count)
+	$PlaceGui/Place.text = str(place)
+	$PlaceGui/PlaceRacerCount.text = str(racer_count)
+	$LapGui/LapCount.text = str(player.lap)

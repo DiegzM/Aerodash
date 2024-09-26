@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://1g8g10ir4k70"]
+[gd_scene load_steps=26 format=3 uid="uid://1g8g10ir4k70"]
 
 [ext_resource type="Script" path="res://CameraPivot.gd" id="1_lj8ue"]
 [ext_resource type="Script" path="res://AI.gd" id="1_s3qo3"]
@@ -57,6 +57,10 @@ albedo_color = Color(1, 1, 0, 1)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_qd47k"]
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_bgbh6"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tbink"]
+
 [node name="Node3D" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -82,168 +86,331 @@ light_energy = 1.281
 light_indirect_energy = 1.242
 light_volumetric_fog_energy = 1.242
 
-[node name="AIInterface1" type="Node3D" parent="."]
+[node name="AIGroup" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 133.11, 71.6364)
+
+[node name="AIInterface1" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5009, 78.4331, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface1"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface1/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface1/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface1/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface1/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface1"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
-[node name="AIInterface2" type="Node3D" parent="."]
+[node name="AIInterface2" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.2128, 78.4331, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface2"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface2/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface2/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface2/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface2/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface2"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
-[node name="AIInterface3" type="Node3D" parent="."]
+[node name="AIInterface3" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4569, 89.2145, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface3"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface3/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface3/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface3/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface3/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface3"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
-[node name="AIInterface4" type="Node3D" parent="."]
+[node name="AIInterface4" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4569, 67.6594, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface4"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface4/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface4/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface4/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface4/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface4"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
-[node name="AIInterface5" type="Node3D" parent="."]
+[node name="AIInterface5" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.8955, 71.345, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface5"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface5/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface5/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface5/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface5/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface5"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
-[node name="AIInterface6" type="Node3D" parent="."]
+[node name="AIInterface6" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2382, 71.345, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface6"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface6/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface6/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface6/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface6/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface6"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
-[node name="AIInterface7" type="Node3D" parent="."]
+[node name="AIInterface7" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2382, 84.9587, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface7"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface7/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface7/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface7/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface7/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface7"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
-[node name="AIInterface8" type="Node3D" parent="."]
+[node name="AIInterface8" type="Node3D" parent="AIGroup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.1691, 84.9587, 102.865)
 
-[node name="AI" type="RigidBody3D" parent="AIInterface8"]
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface8"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface8/AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface8/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface8/AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface8/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="Pivot" type="Node3D" parent="AIInterface8"]
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface9" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5009, 78.4331, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface9/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface9/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface10" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.2128, 78.4331, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface10/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface10/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface11" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4569, 89.2145, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface11/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface11/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface12" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4569, 67.6594, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface12/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface12/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface13" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.8955, 71.345, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface13/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface13/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface14" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2382, 71.345, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface14/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface14/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface15" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2382, 84.9587, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface15/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface15/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface16" type="Node3D" parent="AIGroup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.1691, 84.9587, 121.364)
+
+[node name="AI" type="RigidBody3D" parent="AIGroup/AIInterface16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIGroup/AIInterface16/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIGroup/AIInterface16/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIGroup/AIInterface16"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("2_m33bt")
 
 [node name="PlayerInterface" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.884, 79.4878, 104.601)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.884, 212.598, 176.237)
 
 [node name="PlayerGui" type="Control" parent="PlayerInterface"]
 layout_mode = 3
@@ -252,20 +419,27 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("3_xfw1j")
 
-[node name="Place" type="Label" parent="PlayerInterface/PlayerGui"]
+[node name="PlaceGui" type="Control" parent="PlayerInterface/PlayerGui"]
+anchors_preset = 0
+offset_left = 52.0
+offset_top = 36.0
+offset_right = 92.0
+offset_bottom = 76.0
+
+[node name="Place" type="Label" parent="PlayerInterface/PlayerGui/PlaceGui"]
 layout_mode = 2
 offset_left = 55.0
-offset_top = 2.0
+offset_top = -21.0
 offset_right = 98.0
-offset_bottom = 105.0
+offset_bottom = 116.0
 scale = Vector2(1.00662, 1.00536)
-theme_override_font_sizes/font_size = 75
+theme_override_font_sizes/font_size = 100
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="PlaceSlash" type="Label" parent="PlayerInterface/PlayerGui"]
+[node name="PlaceSlash" type="Label" parent="PlayerInterface/PlayerGui/PlaceGui"]
 layout_mode = 2
 offset_left = 92.0
 offset_top = 50.0
@@ -274,13 +448,40 @@ offset_bottom = 187.0
 theme_override_font_sizes/font_size = 50
 text = "/"
 
-[node name="PlaceRacerCount" type="Label" parent="PlayerInterface/PlayerGui"]
+[node name="PlaceRacerCount" type="Label" parent="PlayerInterface/PlayerGui/PlaceGui"]
 layout_mode = 2
 offset_left = 112.0
 offset_top = 68.0
 offset_right = 151.0
 offset_bottom = 205.0
 theme_override_font_sizes/font_size = 50
+text = "0"
+
+[node name="LapGui" type="Control" parent="PlayerInterface/PlayerGui"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 2218.0
+offset_top = 47.0
+offset_right = 2258.0
+offset_bottom = 87.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="PlayerInterface/PlayerGui/LapGui"]
+layout_mode = 0
+offset_right = 101.0
+offset_bottom = 69.0
+theme_override_font_sizes/font_size = 50
+text = "Lap:"
+
+[node name="LapCount" type="Label" parent="PlayerInterface/PlayerGui/LapGui"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = -34.0
+offset_right = 291.0
+offset_bottom = 103.0
+theme_override_font_sizes/font_size = 100
 text = "0"
 
 [node name="CameraPivot" type="Node3D" parent="PlayerInterface"]
@@ -312,21 +513,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 2.08165e-12)
 gravity_scale = 1.66533e-16
 script = ExtResource("3_jc0hv")
 
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerInterface/Player"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerInterface/Player"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerInterface/Player"]
-transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
-shape = SubResource("BoxShape3D_4jwbe")
-
 [node name="BaseCharacter" type="RigidBody3D" parent="." groups=["Characters"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 113.918, 0)
 gravity_scale = 1.66533e-16
 script = ExtResource("1_st3f7")
 
 [node name="Track" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4498, 20.8322, 204.559)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4498, 134.75, 204.559)
 
 [node name="0" type="Node3D" parent="Track"]
 transform = Transform3D(1, 0, 0, 0, 1, 0.00015708, 0, -0.00015708, 1, 0, 79.4704, -56.2702)
@@ -642,3 +844,117 @@ shape = SubResource("CylinderShape3D_qd47k")
 
 [node name="RaceManager" type="Node3D" parent="."]
 script = ExtResource("8_dgga5")
+
+[node name="Scenery" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 400, 0, 0, 0, 100, 371.96, 392.446, 0)
+mesh = SubResource("CylinderMesh_bgbh6")
+
+[node name="MeshInstance3D10" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 400, 0, 0, 0, 100, -488.194, -18.7353, 0)
+mesh = SubResource("CylinderMesh_bgbh6")
+
+[node name="MeshInstance3D11" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 400, 0, 0, 0, 100, -61.3722, -40.6406, 547.337)
+mesh = SubResource("CylinderMesh_bgbh6")
+
+[node name="MeshInstance3D12" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(668.456, 0, 0, 0, 69.2226, 0, 0, 0, 683.257, -351.237, -21.1941, -721.831)
+mesh = SubResource("CylinderMesh_bgbh6")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 400, 0, 0, 0, 100, 371.96, 310.847, -679.417)
+mesh = SubResource("CylinderMesh_bgbh6")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 400, 0, 0, 0, 100, 371.96, 77.5432, 419.464)
+mesh = SubResource("CylinderMesh_bgbh6")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, 164.429, 185.48, 0)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(556.724, 0, 0, 0, 178.182, 0, 0, 0, 322.464, -407.312, -24.8344, 135.944)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D17" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(556.724, 0, 0, 0, 178.182, 0, 0, 0, 322.464, 1367.24, -24.8344, -326.756)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, 164.429, 249.328, -563.118)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, -154.121, 269.494, 0)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, 241.534, 111.706, 262.018)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, 468.566, 251.114, 262.018)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D18" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, -165.631, 251.114, -294.627)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D19" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, 593.022, 72.2038, -671.636)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D20" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 957.907, 0, 0, 0, 100, 804.761, 227.934, -671.636)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D21" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 957.907, 0, 0, 0, 100, 588.219, -0.933533, 823.417)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D22" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 957.907, 0, 0, 0, 100, 192.987, -182.471, 819.694)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D23" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 957.907, 0, 0, 0, 100, 976.639, 11.9577, 507.647)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D24" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 957.907, 0, 0, 0, 100, 830.748, 341.099, 700.202)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D25" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 957.907, 0, 0, 0, 100, 1300.04, 341.099, 293.941)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D26" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 957.907, 0, 0, 0, 100, 1300.04, 341.099, 293.941)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D27" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(2594.82, 0, 0, 0, 13.4464, 0, 0, 0, 44.8389, 869.756, 348.383, 20.3224)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D28" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(72660.6, 0, 0, 0, 13.4464, 0, 0, 0, 44.8389, 869.756, 2.798, -319.54)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D16" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(100, 0, 0, 0, 598.239, 0, 0, 0, 100, 931.81, 251.114, -498.601)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D13" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(-99.7542, 0, -7.00698, 0, 598.239, 0, 7.00697, 0, -99.7542, 891.462, 269.494, 77.3014)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D14" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(-99.7542, 0, -7.00698, 0, 598.239, 0, 7.00697, 0, -99.7542, 478.42, 111.706, -156.349)
+mesh = SubResource("BoxMesh_tbink")
+
+[node name="MeshInstance3D15" type="MeshInstance3D" parent="Scenery"]
+transform = Transform3D(-99.7542, 0, -7.00698, 0, 598.239, 0, 7.00697, 0, -99.7542, 251.946, 251.114, -140.441)
+mesh = SubResource("BoxMesh_tbink")
