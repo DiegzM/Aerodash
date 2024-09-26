@@ -1,11 +1,14 @@
-[gd_scene load_steps=21 format=3 uid="uid://1g8g10ir4k70"]
+[gd_scene load_steps=24 format=3 uid="uid://1g8g10ir4k70"]
 
 [ext_resource type="Script" path="res://CameraPivot.gd" id="1_lj8ue"]
 [ext_resource type="Script" path="res://AI.gd" id="1_s3qo3"]
 [ext_resource type="Script" path="res://BaseCharacter.gd" id="1_st3f7"]
 [ext_resource type="Script" path="res://SpeedDirection.gd" id="2_c0kq7"]
+[ext_resource type="Script" path="res://AIPivot.gd" id="2_m33bt"]
 [ext_resource type="Script" path="res://Player.gd" id="3_jc0hv"]
+[ext_resource type="Script" path="res://PlayerGui.gd" id="3_xfw1j"]
 [ext_resource type="PackedScene" uid="uid://ls8u7kdnfvpi" path="res://gate.tscn" id="6_ubmwe"]
+[ext_resource type="Script" path="res://RaceManager.gd" id="8_dgga5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pfqw3"]
 sky_top_color = Color(0.105882, 0.0392157, 0.172549, 1)
@@ -79,21 +82,206 @@ light_energy = 1.281
 light_indirect_energy = 1.242
 light_volumetric_fog_energy = 1.242
 
-[node name="AI" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 23.3794, 267.706)
+[node name="AIInterface1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5009, 78.4331, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("1_s3qo3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="AI"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface1/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AI"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface1/AI"]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
+[node name="Pivot" type="Node3D" parent="AIInterface1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.2128, 78.4331, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface2/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface2/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIInterface2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface3" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4569, 89.2145, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface3/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface3/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIInterface3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface4" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4569, 67.6594, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface4/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface4/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIInterface4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface5" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.8955, 71.345, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface5/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface5/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIInterface5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface6" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2382, 71.345, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface6/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface6/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIInterface6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface7" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2382, 84.9587, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface7/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface7/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIInterface7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
+[node name="AIInterface8" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.1691, 84.9587, 102.865)
+
+[node name="AI" type="RigidBody3D" parent="AIInterface8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("1_s3qo3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIInterface8/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_w1o3i")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIInterface8/AI"]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("BoxShape3D_4jwbe")
+
+[node name="Pivot" type="Node3D" parent="AIInterface8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("2_m33bt")
+
 [node name="PlayerInterface" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 79.4878, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.884, 79.4878, 104.601)
+
+[node name="PlayerGui" type="Control" parent="PlayerInterface"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_xfw1j")
+
+[node name="Place" type="Label" parent="PlayerInterface/PlayerGui"]
+layout_mode = 2
+offset_left = 55.0
+offset_top = 2.0
+offset_right = 98.0
+offset_bottom = 105.0
+scale = Vector2(1.00662, 1.00536)
+theme_override_font_sizes/font_size = 75
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="PlaceSlash" type="Label" parent="PlayerInterface/PlayerGui"]
+layout_mode = 2
+offset_left = 92.0
+offset_top = 50.0
+offset_right = 131.0
+offset_bottom = 187.0
+theme_override_font_sizes/font_size = 50
+text = "/"
+
+[node name="PlaceRacerCount" type="Label" parent="PlayerInterface/PlayerGui"]
+layout_mode = 2
+offset_left = 112.0
+offset_top = 68.0
+offset_right = 151.0
+offset_bottom = 205.0
+theme_override_font_sizes/font_size = 50
+text = "0"
 
 [node name="CameraPivot" type="Node3D" parent="PlayerInterface"]
 script = ExtResource("1_lj8ue")
@@ -137,23 +325,320 @@ shape = SubResource("BoxShape3D_4jwbe")
 gravity_scale = 1.66533e-16
 script = ExtResource("1_st3f7")
 
-[node name="Track 1" type="Node3D" parent="."]
+[node name="Track" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4498, 20.8322, 204.559)
 
-[node name="0" type="Node3D" parent="Track 1"]
+[node name="0" type="Node3D" parent="Track"]
 transform = Transform3D(1, 0, 0, 0, 1, 0.00015708, 0, -0.00015708, 1, 0, 79.4704, -56.2702)
 
-[node name="Gate" parent="Track 1/0" instance=ExtResource("6_ubmwe")]
+[node name="Gate" parent="Track/0" instance=ExtResource("6_ubmwe")]
 transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 2.08165e-12, 0, 0)
 
-[node name="SectionBoundary" type="Area3D" parent="Track 1/0"]
+[node name="SectionBoundary" type="Area3D" parent="Track/0"]
 transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Track 1/0/SectionBoundary"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/0/SectionBoundary"]
 transform = Transform3D(112.393, 0, -1.71249e-21, -1.71354e-21, -3.93612e-06, -112.324, 1.86942e-31, 90.0969, -4.89296e-06, 0, 0.00627899, -39.0576)
 shape = SubResource("CylinderShape3D_qd47k")
 
-[node name="1" type="Node3D" parent="Track 1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0.00015708, 0, -0.00015708, 1, 0, 79.4704, -204.459)
+[node name="1" type="Node3D" parent="Track"]
+transform = Transform3D(1, 0, 0, 0, 1, 0.00015708, 0, -0.00015708, 1, 0, 79.4704, -205.036)
 
-[node name="Gate" parent="Track 1/1" instance=ExtResource("6_ubmwe")]
+[node name="Gate" parent="Track/1" instance=ExtResource("6_ubmwe")]
 transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 2.08165e-12, 0, 0)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/1"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/1/SectionBoundary"]
+transform = Transform3D(112.393, 0, -1.71249e-21, -1.71354e-21, -3.93612e-06, -112.324, 1.86942e-31, 90.0969, -4.89296e-06, 0, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="2" type="Node3D" parent="Track"]
+transform = Transform3D(0.90415, 6.71071e-05, -0.427216, 1.23045e-12, 1, 0.00015708, 0.427216, -0.000142024, 0.90415, 0, 79.4704, -353.926)
+
+[node name="Gate" parent="Track/2" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/2"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/2/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="3" type="Node3D" parent="Track"]
+transform = Transform3D(0.768239, 0.000100557, -0.640163, -3.30371e-12, 1, 0.00015708, 0.640163, -0.000120675, 0.768239, 50.6293, 79.4704, -455.526)
+
+[node name="Gate" parent="Track/3" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/3"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/3/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="4" type="Node3D" parent="Track"]
+transform = Transform3D(0.503985, 0.000135672, -0.863712, -3.30371e-12, 1, 0.00015708, 0.863712, -7.9166e-05, 0.503985, 118.995, 79.4704, -531.33)
+
+[node name="Gate" parent="Track/4" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/4"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/4/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="5" type="Node3D" parent="Track"]
+transform = Transform3D(0.271457, 0.000151182, -0.962451, -2.59857e-12, 1, 0.00015708, 0.962451, -4.26405e-05, 0.271457, 218.214, 79.4704, -586.479)
+
+[node name="Gate" parent="Track/5" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/5"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/5/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="6" type="Node3D" parent="Track"]
+transform = Transform3D(-0.126684, 0.000155814, -0.991943, -3.30371e-12, 1, 0.00015708, 0.991943, 1.98995e-05, -0.126684, 323.999, 79.4704, -609.55)
+
+[node name="Gate" parent="Track/6" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/6"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/6/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="7" type="Node3D" parent="Track"]
+transform = Transform3D(-0.371222, 0.000145856, -0.928544, -2.59857e-12, 1, 0.00015708, 0.928544, 5.83115e-05, -0.371222, 436.275, 79.4704, -592.82)
+
+[node name="Gate" parent="Track/7" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/7"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/7/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="8" type="Node3D" parent="Track"]
+transform = Transform3D(-0.66553, 0.00011724, -0.746371, 2.5069e-12, 1, 0.00015708, 0.746371, 0.000104541, -0.66553, 529.504, 79.4704, -551.246)
+
+[node name="Gate" parent="Track/8" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/8"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/8/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="9" type="Node3D" parent="Track"]
+transform = Transform3D(-0.831334, 8.73009e-05, -0.555773, 1.19202e-12, 1, 0.00015708, 0.555773, 0.000130586, -0.831334, 612.632, 79.4704, -473.945)
+
+[node name="Gate" parent="Track/9" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/9"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/9/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="10" type="Node3D" parent="Track"]
+transform = Transform3D(-0.959928, 4.40214e-05, -0.280248, 7.5514e-12, 1, 0.00015708, 0.280248, 0.000150785, -0.959928, 672.982, 79.4704, -386.464)
+
+[node name="Gate" parent="Track/10" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/10"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/10/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="11" type="Node3D" parent="Track"]
+transform = Transform3D(-0.999527, 4.82992e-06, -0.030748, 3.45553e-12, 1, 0.00015708, 0.030748, 0.000157006, -0.999527, 702.511, 79.4704, -276.857)
+
+[node name="Gate" parent="Track/11" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/11"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/11/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="12" type="Node3D" parent="Track"]
+transform = Transform3D(-0.999527, 4.82992e-06, -0.030748, 3.45553e-12, 1, 0.00015708, 0.030748, 0.000157006, -0.999527, 702.511, 79.4704, -156.358)
+
+[node name="Gate" parent="Track/12" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/12"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/12/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="13" type="Node3D" parent="Track"]
+transform = Transform3D(-0.999527, 4.82992e-06, -0.030748, 3.45553e-12, 1, 0.00015708, 0.030748, 0.000157006, -0.999527, 702.511, 79.4704, -39.7123)
+
+[node name="Gate" parent="Track/13" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/13"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/13/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="14" type="Node3D" parent="Track"]
+transform = Transform3D(-0.967498, -3.97224e-05, 0.25288, 1.13002e-12, 1, 0.00015708, -0.25288, 0.000151975, -0.967498, 691.34, 79.4704, 65.9273)
+
+[node name="Gate" parent="Track/14" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/14"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/14/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="15" type="Node3D" parent="Track"]
+transform = Transform3D(-0.873254, -7.65396e-05, 0.487265, -4.12351e-12, 1, 0.00015708, -0.487265, 0.000137171, -0.873254, 660.346, 79.4704, 175.13)
+
+[node name="Gate" parent="Track/15" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/15"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/15/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="16" type="Node3D" parent="Track"]
+transform = Transform3D(-0.654833, -0.000118717, 0.755773, 1.1657e-11, 1, 0.00015708, -0.755773, 0.000102861, -0.654833, 607.157, 79.4704, 262.256)
+
+[node name="Gate" parent="Track/16" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/16"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/16/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="17" type="Node3D" parent="Track"]
+transform = Transform3D(-0.444542, -0.000140706, 0.895758, -1.91982e-12, 1, 0.00015708, -0.895758, 6.98286e-05, -0.444542, 519.831, 79.4704, 334.781)
+
+[node name="Gate" parent="Track/17" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/17"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/17/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="18" type="Node3D" parent="Track"]
+transform = Transform3D(-0.0586967, -0.000156809, 0.998276, -5.8161e-12, 1, 0.00015708, -0.998276, 9.22008e-06, -0.0586967, 420.126, 79.4704, 376.992)
+
+[node name="Gate" parent="Track/18" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/18"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/18/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="19" type="Node3D" parent="Track"]
+transform = Transform3D(0.193344, -0.000154116, 0.981131, -3.465e-12, 1, 0.00015708, -0.981131, -3.03704e-05, 0.193344, 306.692, 79.4704, 381.286)
+
+[node name="Gate" parent="Track/19" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/19"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/19/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="20" type="Node3D" parent="Track"]
+transform = Transform3D(0.516234, -0.000134531, 0.856448, 1.17928e-11, 1, 0.00015708, -0.856448, -8.10901e-05, 0.516234, 207.388, 79.4704, 357.646)
+
+[node name="Gate" parent="Track/20" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/20"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/20/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="21" type="Node3D" parent="Track"]
+transform = Transform3D(0.714387, -0.000109917, 0.699751, -1.08916e-11, 1, 0.00015708, -0.699751, -0.000112216, 0.714387, 111.414, 79.4704, 297.027)
+
+[node name="Gate" parent="Track/21" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/21"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/21/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="22" type="Node3D" parent="Track"]
+transform = Transform3D(0.891656, -7.11125e-05, 0.452715, 2.04422e-12, 1, 0.00015708, -0.452715, -0.000140061, 0.891656, 35.9453, 79.4704, 222.198)
+
+[node name="Gate" parent="Track/22" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 0.325378, -1.0248, 0.116638)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/22"]
+transform = Transform3D(1.48451, 9.72283e-13, -1.54226e-07, -1.1486e-10, 1.3112, 1.5904e-11, 3.4916e-07, -5.53325e-11, 1.743, 16.0762, 0.132385, -1.36313)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/22/SectionBoundary"]
+transform = Transform3D(157.796, -5.95179e-06, -1.98714e-09, 1.54245e-09, -3.1845e-06, -112.321, 6.43657e-06, 72.8996, -4.88798e-06, 3.8147e-06, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="23" type="Node3D" parent="Track"]
+transform = Transform3D(1, 7.11556e-12, -2.80266e-08, -5.84691e-12, 1, 0.00015708, 1.11242e-08, -0.00015708, 1, 0.806854, 79.4086, 85.1829)
+
+[node name="Gate" parent="Track/23" instance=ExtResource("6_ubmwe")]
+transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 2.08165e-12, 0, 0)
+
+[node name="SectionBoundary" type="Area3D" parent="Track/23"]
+transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track/23/SectionBoundary"]
+transform = Transform3D(112.393, 0, -1.71249e-21, -1.71354e-21, -3.93612e-06, -112.324, 1.86942e-31, 90.0969, -4.89296e-06, 0, 0.00627899, -39.0576)
+shape = SubResource("CylinderShape3D_qd47k")
+
+[node name="RaceManager" type="Node3D" parent="."]
+script = ExtResource("8_dgga5")

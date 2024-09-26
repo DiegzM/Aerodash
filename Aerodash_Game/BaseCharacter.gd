@@ -5,6 +5,7 @@ extends RigidBody3D
 # SPEEDS
 const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const MAX_SPEED = Vector3(80, 80, 80) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
+const ROLL_SPEED = 4.0
 
 # DAMPING
 const MOVEMENT_DAMPING = 0.95 # Closer to 1 is slower
@@ -14,13 +15,29 @@ const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
 const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = faster
 ##################################
 
+var track = null
 var previous_section = null
 var current_section = null
+var current_section_index = 0
 var current_gate = null
+var track_sections: Array = []
+var next_gate = null
+
+var lap = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	track = get_tree().current_scene.get_node("Track")
+	if track:
+		for i in range(track.get_child_count()):
+			track_sections.append(track.get_child(i))
+		if track.get_child_count() > 1:
+			next_gate = track.get_child(1).get_node("Gate")
+		var start_track_node = track.get_node("0")
+		if start_track_node:
+			current_section = start_track_node
+			current_gate = start_track_node.get_node("Gate")
+		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _integrate_forces(state):
 	apply_rotation(state)
@@ -54,6 +71,7 @@ func apply_movement(state):
 
 func apply_rotation(state):
 	# Get the current rotation and the target rotation
+	angular_velocity = Vector3.ZERO
 	var current_rotation = global_rotation
 	var target_rotation = get_input_rotation()
 
@@ -71,16 +89,27 @@ func on_section_passed(gate: Node3D):
 		current_section = gate.get_parent()
 		current_gate = gate
 		
+		if current_section.name == "1":
+			lap += 1
+		
 		if previous_section and previous_section.has_node("SectionBoundary"):
 			var prev_boundary = previous_section.get_node("SectionBoundary")
 			if prev_boundary.body_exited.is_connected(_on_section_boundary_exited):
 				prev_boundary.body_exited.disconnect(_on_section_boundary_exited)
 
 		if current_section.has_node("SectionBoundary"):
-			print(current_section.get_node("SectionBoundary"))
 			var boundary = current_section.get_node("SectionBoundary")
 			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
 				boundary.body_exited.connect(_on_section_boundary_exited)
+		
+		current_section_index += 1
+		if current_section_index >= track.get_child_count():
+			current_section_index = 0
+			
+		if current_section_index + 1 < track.get_child_count():
+			next_gate = track.get_child(current_section_index + 1).get_node("Gate")
+		else:
+			next_gate = track.get_child(0).get_node("Gate")
 
 func _on_section_boundary_exited(body):
 	if body == self:  # Ensure that the body that exited is this BaseCharacter
