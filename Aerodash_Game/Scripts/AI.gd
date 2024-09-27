@@ -1,4 +1,4 @@
-extends "res://BaseCharacter.gd"
+extends "res://Scripts/BaseCharacter.gd"
 
 @export var roll_speed: float = 5.0
 @export var roll_smoothness: float = 3
@@ -9,10 +9,21 @@ var pivot = null
 var random_x_offset = randf_range(-2.5, 2.5)
 var random_y_offset = randf_range(-2.5, 2.5) 
 
+var vehicle = preload("res://Assets/Vehicles/vehicle_1.tscn")
+var vehicle_instance = vehicle.instantiate()
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
 	pivot = get_parent().get_node("Pivot")
+	
+	add_child(vehicle_instance)
+	
+	for child in vehicle_instance.get_children():
+		vehicle_instance.remove_child(child)
+		add_child(child)
+		
+	remove_child(vehicle_instance)
 
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):

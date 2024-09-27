@@ -37,6 +37,10 @@ func _ready():
 		if start_track_node:
 			current_section = start_track_node
 			current_gate = start_track_node.get_node("Gate")
+		if current_section.has_node("SectionBoundary"):
+			var boundary = current_section.get_node("SectionBoundary")
+			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
+				boundary.body_exited.connect(_on_section_boundary_exited)
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _integrate_forces(state):

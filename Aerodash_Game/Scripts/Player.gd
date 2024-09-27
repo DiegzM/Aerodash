@@ -1,4 +1,4 @@
-extends "res://BaseCharacter.gd"
+extends "res://Scripts/BaseCharacter.gd"
 
 const MOUSE_SENSITIVITY = 0.3
 @export var roll_smoothness: float = 3
@@ -6,20 +6,28 @@ const MOUSE_SENSITIVITY = 0.3
 @onready var current_roll_speed: float = 0
 
 var pivot: Node3D
+var vehicle = preload("res://Assets/Vehicles/vehicle_1.tscn")
+var vehicle_instance = vehicle.instantiate()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
 	pivot = get_parent().get_node("CameraPivot")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	add_child(vehicle_instance)
+	
+	for child in vehicle_instance.get_children():
+		vehicle_instance.remove_child(child)
+		add_child(child)
+		
+	remove_child(vehicle_instance)
 
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):
 	pass
 
 func _physics_process(delta):
-	print(current_section_index)
-	print(lap)
 	var target_roll_speed = 0.0
 
 	if Input.is_action_pressed("roll_left"):
