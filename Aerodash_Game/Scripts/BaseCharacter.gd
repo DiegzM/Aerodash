@@ -5,6 +5,7 @@ extends RigidBody3D
 # SPEEDS
 const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const MAX_SPEED = Vector3(80, 80, 80) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
+const MAX_BOOST_SPEED = Vector3(100, 100, 100) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
 const ROLL_SPEED = 4.0
 
 # DAMPING
@@ -14,6 +15,8 @@ const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
 # ROTATION SMOOTHNESS
 const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = faster
 ##################################
+
+var boosting = false
 
 var track = null
 var previous_section = null
@@ -25,8 +28,12 @@ var next_gate = null
 
 var lap = 1
 
+var race_manager = null
+var race_finished = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	race_manager = get_tree().current_scene.get_node("RaceManager")
 	track = get_tree().current_scene.get_node("Track")
 	if track:
 		for i in range(track.get_child_count()):
@@ -44,8 +51,10 @@ func _ready():
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _integrate_forces(state):
-	apply_rotation(state)
-	apply_movement(state)
+	set_sleeping(false)
+	if (race_manager.race_started and not race_finished):
+		apply_rotation(state)
+		apply_movement(state)
 	
 # Calculates movement
 func apply_movement(state):
@@ -67,9 +76,14 @@ func apply_movement(state):
 	
 	# Clamp velocity
 	var speed = state.linear_velocity.length()
-
-	if speed > MAX_SPEED.length():
-		state.linear_velocity = state.linear_velocity.normalized() * MAX_SPEED.length()
+	
+	var current_max_speed = MAX_SPEED.length()
+	
+	if boosting:
+		current_max_speed = MAX_BOOST_SPEED.length()
+	
+	if speed > current_max_speed:
+		state.linear_velocity = state.linear_velocity.normalized() * current_max_speed
 	
 	apply_force(local_force)
 
@@ -87,6 +101,14 @@ func apply_rotation(state):
 	# Apply the new smooth rotation
 	global_rotation = current_rotation
 
+func get_next_gate(section_index) -> Node3D:
+	var gate = null
+	if section_index + 1 < track.get_child_count():
+		gate = track.get_child(section_index + 1).get_node("Gate")
+	else:
+		gate = track.get_child(0).get_node("Gate")
+	return gate
+	
 func on_section_passed(gate: Node3D):
 	if current_gate != gate:
 		previous_section = current_section
@@ -108,10 +130,10 @@ func on_section_passed(gate: Node3D):
 			current_section_index = 0
 			lap += 1
 			
-		if current_section_index + 1 < track.get_child_count():
-			next_gate = track.get_child(current_section_index + 1).get_node("Gate")
-		else:
-			next_gate = track.get_child(0).get_node("Gate")
+		next_gate = get_next_gate(current_section_index)
+		
+		if lap > race_manager.laps:
+			race_finished = true
 
 func _on_section_boundary_exited(body):
 	if body == self:  # Ensure that the body that exited is this BaseCharacter

@@ -10,6 +10,8 @@ var min_pitch = 0.9
 var max_pitch = 2.0
 
 var elapsed_time = 0.0
+
+var race_started
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -18,7 +20,14 @@ func _ready():
 func _process(delta):
 	update_text(delta)
 	update_wind(delta)
-	update_timer(delta)
+	
+	if not race_started:
+		update_countdown(delta)
+	elif not player.race_finished:
+		update_stopwatch(delta)
+	
+	if player.race_finished:
+		update_center_text("RACE FINISHED!", delta)
 
 func update_text(delta):
 	place = race_manager.get_place(player)
@@ -35,7 +44,7 @@ func update_wind(delta):
 	
 	$Wind.pitch_scale = pitch
 
-func update_timer(delta):
+func update_stopwatch(delta):
 	elapsed_time += delta
 	
 	var minutes = int(elapsed_time / 60)
@@ -44,4 +53,16 @@ func update_timer(delta):
 	
 	var time_text = "%02d:%02d:%02d" % [minutes, seconds, centiseconds]
 
-	$TimerGui/Timer.text = time_text
+	$StopwatchGui/Stopwatch.text = time_text
+
+func update_countdown(delta):
+	var timer = race_manager.countdown_timer
+
+	if race_manager.race_started:
+		update_center_text("", delta)
+		race_started = true
+	else:
+		update_center_text(str(ceil(timer)), delta)
+
+func update_center_text(text, delta):
+	$CenterGui/Timer.text = text

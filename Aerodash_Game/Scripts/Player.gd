@@ -9,6 +9,8 @@ var pivot: Node3D
 var vehicle = preload("res://Assets/Vehicles/vehicle_1.tscn")
 var vehicle_instance = vehicle.instantiate()
 
+var mouse_button_pressed = false
+\
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
@@ -21,25 +23,38 @@ func _ready():
 		vehicle_instance.remove_child(child)
 		add_child(child)
 		
+	for child in get_children():
+		if child.name == "Audio":
+			child.body = self
+		
 	remove_child(vehicle_instance)
 
-# Handle input events like mouse motion and toggling mouse lock
 func _input(event):
-	pass
+	if event is InputEventMouseButton:
+		if event.is_pressed():  # Mouse button down.
+			mouse_button_pressed = true
+		elif not event.is_pressed():  # Mouse button released.
+			mouse_button_pressed = false
 
 func _physics_process(delta):
 	var target_roll_speed = 0.0
 
-	if Input.is_action_pressed("roll_left"):
-		target_roll_speed = ROLL_SPEED
-	elif Input.is_action_pressed("roll_right"):
-		target_roll_speed = -ROLL_SPEED
+	if race_manager.race_started:
+		if Input.is_action_pressed("roll_left"):
+			target_roll_speed = ROLL_SPEED
+		elif Input.is_action_pressed("roll_right"):
+			target_roll_speed = -ROLL_SPEED
 
 	# Smoothly lerp roll speed from current value towards the target value
 	current_roll_speed = lerp(current_roll_speed, target_roll_speed, roll_smoothness * delta)
 
 	if current_roll_speed != 0.0:
 		pivot.rotate_object_local(Vector3(0, 0, 1), current_roll_speed * delta)
+		
+	if mouse_button_pressed:
+		boosting = true
+	else:
+		boosting = false
 		
 		
 # Get the player's input for movement
@@ -72,3 +87,5 @@ func _on_section_boundary_exited(body):
 
 func on_section_passed(gate: Node3D):
 	super(gate)
+
+	

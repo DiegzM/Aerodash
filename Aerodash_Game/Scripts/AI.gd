@@ -22,7 +22,11 @@ func _ready():
 	for child in vehicle_instance.get_children():
 		vehicle_instance.remove_child(child)
 		add_child(child)
-		
+	
+	for child in get_children():
+		if child.name == "Audio":
+			child.body = self
+			
 	remove_child(vehicle_instance)
 
 # Handle input events like mouse motion and toggling mouse lock

@@ -1,12 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8pg7ea0ofwkc"]
+[gd_scene load_steps=5 format=3 uid="uid://b8pg7ea0ofwkc"]
 
-[ext_resource type="AudioStream" uid="uid://cy5hqw3tigglc" path="res://Audio/vehicle_1_loop.mp3" id="2_wu705"]
+[ext_resource type="Script" path="res://Scripts/vehicle_1_audio.gd" id="1_cakxh"]
+[ext_resource type="AudioStream" uid="uid://b666orcy3q4lp" path="res://Audio/vehicle_2_loop.mp3" id="2_28ih8"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_w1o3i"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4jwbe"]
 
-[node name="RigidBody3D" type="RigidBody3D"]
+[node name="vehicle_1" type="RigidBody3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
@@ -17,11 +18,13 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
 shape = SubResource("BoxShape3D_4jwbe")
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("2_wu705")
-volume_db = -33.0
+[node name="Audio" type="Node3D" parent="."]
+script = ExtResource("1_cakxh")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Audio"]
+stream = ExtResource("2_28ih8")
+volume_db = -27.0
 unit_size = 20.52
 pitch_scale = 0.7
 autoplay = true
 max_distance = 395.98
-doppler_tracking = 2

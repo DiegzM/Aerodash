@@ -1,5 +1,15 @@
 extends Node3D
 
+########## RACE DEFAULT SETTINGS (Change in Inspector specific to map) ##############
+
+@export var countdown_timer = 5
+
+@export var laps = 3
+
+#####################################################################################
+
+var race_started = false
+
 var characters: Array = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -16,7 +26,14 @@ func find_characters(node: Node):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	update_places(delta)
-	
+	if not race_started:
+		update_countdown_timer(delta)
+
+func update_countdown_timer(delta):
+	countdown_timer -= delta
+	if countdown_timer <= 0:
+		race_started = true
+		
 func update_places(delta):
 	characters.sort_custom(compare_positions)
 
