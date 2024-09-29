@@ -6,6 +6,8 @@ extends RigidBody3D
 const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const MAX_SPEED = Vector3(80, 80, 80) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
 const MAX_BOOST_SPEED = Vector3(100, 100, 100) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
+const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
+const MAX_UPWARD_FACTOR = 0.9 # How many times to increase speed when facing vertically up
 const ROLL_SPEED = 4.0
 
 # DAMPING
@@ -14,6 +16,7 @@ const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
 
 # ROTATION SMOOTHNESS
 const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = faster
+const LERP_VELOCITY = 0.9 # Incase speed reaches max, allow for smooth slowdown
 ##################################
 
 var boosting = false
@@ -30,6 +33,8 @@ var lap = 1
 
 var race_manager = null
 var race_finished = false
+
+var target_velocity = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -74,7 +79,6 @@ func apply_movement(state):
 	if input_vector.z == 0:
 		state.linear_velocity.z *= MOVEMENT_DAMPING
 	
-	# Clamp velocity
 	var speed = state.linear_velocity.length()
 	
 	var current_max_speed = MAX_SPEED.length()
@@ -82,8 +86,20 @@ func apply_movement(state):
 	if boosting:
 		current_max_speed = MAX_BOOST_SPEED.length()
 	
+	# Multiple current_max_speed given players tilt upwards or downwards
+	var movement_direction = state.linear_velocity.normalized()
+	var vertical_angle = movement_direction.dot(Vector3.UP)
+	
+	if vertical_angle > 0:
+		var upward_factor = lerp(1.0, MAX_UPWARD_FACTOR, vertical_angle)
+		current_max_speed *= upward_factor
+	elif vertical_angle < 0:
+		var downward_factor = lerp(1.0, MAX_DOWNWARD_FACTOR, abs(vertical_angle))
+		current_max_speed *= downward_factor
+	
 	if speed > current_max_speed:
-		state.linear_velocity = state.linear_velocity.normalized() * current_max_speed
+		target_velocity = state.linear_velocity.normalized() * current_max_speed
+		state.linear_velocity = lerp(state.linear_velocity, target_velocity, LERP_VELOCITY)
 	
 	apply_force(local_force)
 
