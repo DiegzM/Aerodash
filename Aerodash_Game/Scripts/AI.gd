@@ -34,7 +34,7 @@ func _input(event):
 	pass
 
 func _physics_process(delta):
-	pass
+	super(delta)
 		
 # Get the player's input for movement
 func get_input_vector() -> Vector3:

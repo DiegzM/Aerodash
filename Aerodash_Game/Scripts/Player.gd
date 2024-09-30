@@ -44,6 +44,7 @@ func _input(event):
 			mouse_button_pressed = false
 
 func _physics_process(delta):
+	super(delta)
 	var target_roll_speed = 0.0
 
 	if race_manager.race_started:
@@ -59,9 +60,9 @@ func _physics_process(delta):
 		pivot.rotate_object_local(Vector3(0, 0, 1), current_roll_speed * delta)
 		
 	if mouse_button_pressed:
-		boosting = true
+		boost_pressed = true
 	else:
-		boosting = false
+		boost_pressed = false
 	
 	update_gates_transparency(delta)
 

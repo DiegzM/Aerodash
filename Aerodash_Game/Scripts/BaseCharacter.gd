@@ -7,6 +7,8 @@ const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upwa
 const BOOST_ACCELERATION = Vector3(500, 500, 500)
 const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
 const MAX_BOOST_SPEED = Vector3(110, 110, 110) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
+const MAX_BOOST_TIME = 7
+const BOOST_RECHARGE_SPEED = 0.2 # per second
 const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
 const MAX_UPWARD_FACTOR = 0.9 # How many times to increase speed when facing vertically up
 const ROLL_SPEED = 4.0
@@ -20,7 +22,11 @@ const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = 
 const LERP_VELOCITY = 0.9 # Incase speed reaches max, allow for smooth slowdown
 ##################################
 
+var boost_pressed = false
 var boosting = false
+var current_boost_time = MAX_BOOST_TIME
+
+var current_acceleration = ACCELERATION
 
 var track = null
 var previous_section = null
@@ -54,8 +60,11 @@ func _ready():
 			var boundary = current_section.get_node("SectionBoundary")
 			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
 				boundary.body_exited.connect(_on_section_boundary_exited)
-		
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
+func _physics_process(delta):
+	if (race_manager.race_started and not race_finished):
+		boost(delta)
+	
 func _integrate_forces(state):
 	set_sleeping(false)
 	if (race_manager.race_started and not race_finished):
@@ -67,7 +76,7 @@ func apply_movement(state):
 	var input_vector = get_input_vector()
 	
 	var current_max_speed = MAX_SPEED.length()
-	var current_acceleration = ACCELERATION
+	current_acceleration = ACCELERATION
 	
 	if boosting:
 		current_max_speed = MAX_BOOST_SPEED.length()
@@ -96,9 +105,11 @@ func apply_movement(state):
 	if vertical_angle > 0:
 		var upward_factor = lerp(1.0, MAX_UPWARD_FACTOR, vertical_angle)
 		current_max_speed *= upward_factor
+		current_acceleration *= upward_factor
 	elif vertical_angle < 0:
 		var downward_factor = lerp(1.0, MAX_DOWNWARD_FACTOR, abs(vertical_angle))
 		current_max_speed *= downward_factor
+		current_acceleration *= downward_factor
 	
 	if speed > current_max_speed:
 		target_velocity = state.linear_velocity.normalized() * current_max_speed
@@ -120,6 +131,18 @@ func apply_rotation(state):
 	# Apply the new smooth rotation
 	global_rotation = current_rotation
 
+func boost(delta):
+	if boost_pressed:
+		if current_boost_time > 0:
+			boosting = true
+			current_boost_time -= delta
+		else:
+			boosting = false
+	else:
+		boosting = false
+		if current_boost_time <= MAX_BOOST_TIME:
+			current_boost_time += BOOST_RECHARGE_SPEED * delta
+	
 func get_next_gate(section_index) -> Node3D:
 	var gate = null
 	if section_index + 1 < track.get_child_count():

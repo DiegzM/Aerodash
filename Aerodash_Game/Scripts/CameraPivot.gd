@@ -1,11 +1,11 @@
 extends Node3D
 
-@export var max_fov = 125
+@export var max_fov = 140
 @export var min_fov = 75
-@export var max_fov_speed = 100
+@export var max_fov_speed = 180
 
 @export var fov_smoothness: float = 10  # Smoothness for the FOV change
-@export var max_shake_magnitude: float = 0.1
+@export var max_shake_magnitude: float = 0.2
 
 @export var mouse_sensitivity: float = 0.3
 
@@ -48,7 +48,7 @@ func _physics_process(delta):
 		
 func apply_fov(delta):
 	var current_position = global_transform.origin
-	speed = (current_position - previous_position).length() / delta
+	speed =	player.linear_velocity.length()
 	previous_position = current_position 
 	
 	var target_fov = lerp(min_fov, max_fov, clamp(speed / max_fov_speed, 0, 1))

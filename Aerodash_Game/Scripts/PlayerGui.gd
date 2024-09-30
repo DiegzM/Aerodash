@@ -35,7 +35,36 @@ func update_text(delta):
 	$PlaceGui/Place.text = str(place)
 	$PlaceGui/PlaceRacerCount.text = str(racer_count)
 	$LapGui/LapCount.text = str(player.lap)
-
+	$BoostGui/BoostBar.value = clamp(player.current_boost_time/player.MAX_BOOST_TIME, 0, 1)
+	update_leaderboard(delta)
+	
+func update_leaderboard(delta):
+	var leaderboard_gui = $LeaderboardGui
+	var leaderboard = leaderboard_gui.get_node("VBoxContainer")
+	var characters = race_manager.get_characters()
+	
+	for i in range(characters.size()):
+		if i >= leaderboard.get_child_count():
+			var row = leaderboard_gui.get_node("Row").duplicate()
+			leaderboard.add_child(row)
+			leaderboard.get_child(i).text = str(characters[i].name)
+		else:
+			leaderboard.get_child(i).text = str(characters[i].name)
+		var current_row = leaderboard.get_child(i)
+		if characters[i] == player:
+			current_row.text = str(characters[i].name)
+			current_row.modulate = Color(1, 1, 1, 1) 
+		else:
+			current_row.text = str(characters[i].name)
+			current_row.modulate = Color(0.8, 0.8, 0.8, 0.5)
+			
+	var row = leaderboard_gui.get_node("Row")
+	if row:
+		leaderboard_gui.remove_child(row)
+		row.queue_free()
+			
+	
+	
 func update_wind(delta):
 	var player_speed = player.linear_velocity.length()
 	var max_speed = player.MAX_SPEED.length()

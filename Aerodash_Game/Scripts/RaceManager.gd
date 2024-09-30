@@ -76,3 +76,6 @@ func get_place(character):
 	
 func get_racer_count():
 	return characters.size()
+	
+func get_characters():
+	return characters
