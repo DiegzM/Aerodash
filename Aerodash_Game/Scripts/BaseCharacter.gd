@@ -4,8 +4,9 @@ extends RigidBody3D
 ########## SETTINGS ##############
 # SPEEDS
 const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
-const MAX_SPEED = Vector3(80, 80, 80) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
-const MAX_BOOST_SPEED = Vector3(100, 100, 100) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
+const BOOST_ACCELERATION = Vector3(500, 500, 500)
+const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
+const MAX_BOOST_SPEED = Vector3(110, 110, 110) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
 const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
 const MAX_UPWARD_FACTOR = 0.9 # How many times to increase speed when facing vertically up
 const ROLL_SPEED = 4.0
@@ -64,11 +65,18 @@ func _integrate_forces(state):
 # Calculates movement
 func apply_movement(state):
 	var input_vector = get_input_vector()
-
+	
+	var current_max_speed = MAX_SPEED.length()
+	var current_acceleration = ACCELERATION
+	
+	if boosting:
+		current_max_speed = MAX_BOOST_SPEED.length()
+		current_acceleration = BOOST_ACCELERATION
+		
 	var local_force = Vector3(
-		input_vector.x * ACCELERATION.x,
-		input_vector.y * ACCELERATION.y,
-		input_vector.z * ACCELERATION.z
+		input_vector.x * current_acceleration.x,
+		input_vector.y * current_acceleration.y,
+		input_vector.z * current_acceleration.z
 	)
 
 	# Apply damping to local velocity if no input is present
@@ -80,11 +88,6 @@ func apply_movement(state):
 		state.linear_velocity.z *= MOVEMENT_DAMPING
 	
 	var speed = state.linear_velocity.length()
-	
-	var current_max_speed = MAX_SPEED.length()
-	
-	if boosting:
-		current_max_speed = MAX_BOOST_SPEED.length()
 	
 	# Multiple current_max_speed given players tilt upwards or downwards
 	var movement_direction = state.linear_velocity.normalized()

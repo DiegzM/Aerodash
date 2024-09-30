@@ -1,6 +1,7 @@
 extends "res://Scripts/BaseCharacter.gd"
 
 const MOUSE_SENSITIVITY = 0.3
+const GATES_VISIBLE = 8
 @export var roll_smoothness: float = 3
 
 @onready var current_roll_speed: float = 0
@@ -10,7 +11,7 @@ var vehicle = preload("res://Assets/Vehicles/vehicle_1.tscn")
 var vehicle_instance = vehicle.instantiate()
 
 var mouse_button_pressed = false
-\
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
@@ -26,6 +27,12 @@ func _ready():
 	for child in get_children():
 		if child.name == "Audio":
 			child.body = self
+	
+	for section in track_sections:
+		var gate_mesh = get_gate_mesh(section.get_node("Gate"))
+		if gate_mesh:
+			set_mesh_local_transparency(gate_mesh, 1.0)
+
 		
 	remove_child(vehicle_instance)
 
@@ -55,8 +62,34 @@ func _physics_process(delta):
 		boosting = true
 	else:
 		boosting = false
-		
-		
+	
+	update_gates_transparency(delta)
+
+func update_gates_transparency(delta):
+	
+	for section in track_sections:
+		var gate_mesh = get_gate_mesh(section.get_node("Gate"))
+		if gate_mesh:
+			set_mesh_local_transparency(gate_mesh, 1.0)
+			
+	var max_visible_gates = GATES_VISIBLE
+	var player_distance = global_transform.origin.distance_to(next_gate.global_transform.origin)
+	var current_gate_distance = current_gate.global_transform.origin.distance_to(next_gate.global_transform.origin)
+	var proximity_fraction = player_distance/current_gate_distance
+	
+	for i in range(max_visible_gates):
+		var index = (current_section_index + i) % track_sections.size()
+			
+		var gate = get_next_gate(index)
+		if gate:
+			var gate_mesh = get_gate_mesh(gate)
+			if gate_mesh:
+				var gate_min_transparency = float(i) / float(max_visible_gates)  # Lower bound (e.g., 0.0 for the first gate)
+				var gate_max_transparency = float(i + 1) / float(max_visible_gates)  # Upper bound (e.g., 0.2, 0.4, etc.)
+				var target_transparency = lerp(gate_min_transparency, gate_max_transparency, proximity_fraction)
+				
+				set_mesh_local_transparency(gate_mesh, target_transparency)
+				
 # Get the player's input for movement
 func get_input_vector() -> Vector3:
 	var direction = Vector3.ZERO
@@ -75,17 +108,32 @@ func get_input_vector() -> Vector3:
 		direction -= pivot.transform.basis.y
 
 	return direction.normalized()
-	
+
 func get_input_rotation() -> Vector3:
 	var input_rotation = pivot.global_rotation
 	return input_rotation
 	
 func _on_section_boundary_exited(body):
-	if body == self:  # Ensure that the body that exited is this BaseCharacter
+	if body == self:
 		pivot.global_rotation = current_gate.global_rotation
 		global_transform = current_gate.global_transform
+		global_rotation = current_gate.global_rotation
+		linear_velocity /= 2
 
 func on_section_passed(gate: Node3D):
 	super(gate)
 
-	
+func get_gate_mesh(gate) -> MeshInstance3D:
+	var mesh = gate.get_node("Mesh/MeshInstance3D")
+	if mesh:
+		return mesh
+	else:
+		return null
+
+func set_mesh_local_transparency(mesh, transparency):
+	if multiplayer.get_peers().size() > 1:
+		if multiplayer.get_unique_id() == multiplayer.get_multiplayer_authority():
+			mesh.transparency = transparency
+	else:
+			mesh.transparency = transparency
+		

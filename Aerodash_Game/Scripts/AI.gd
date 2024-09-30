@@ -50,8 +50,10 @@ func get_input_rotation() -> Vector3: # Adjust the range as needed
 
 func _on_section_boundary_exited(body):
 	if body == self:  # Ensure that the body that exited is this BaseCharacter
-		global_rotation = current_gate.global_rotation
+		pivot.global_rotation = current_gate.global_rotation
 		global_transform = current_gate.global_transform
+		global_rotation = current_gate.global_rotation
+		linear_velocity /= 3
 
 func on_section_passed(gate: Node3D):
 	super(gate)
