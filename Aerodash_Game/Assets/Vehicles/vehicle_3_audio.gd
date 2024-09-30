@@ -2,8 +2,8 @@ extends Node3D
 
 @onready var stream = $AudioStreamPlayer3D
 
-var min_pitch = 0.25
-var pitch_sensitivity = 0.006
+var min_pitch = 0.50
+var pitch_sensitivity = 0.007
 var max_speed = 120
 
 var velocity = Vector3.ZERO

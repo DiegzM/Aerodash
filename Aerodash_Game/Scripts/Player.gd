@@ -7,9 +7,12 @@ const GATES_VISIBLE = 8
 @onready var current_roll_speed: float = 0
 
 var pivot: Node3D
-var vehicle = preload("res://Assets/Vehicles/vehicle_1.tscn")
-var vehicle_instance = vehicle.instantiate()
-
+var vehicles_scenes = [
+	"res://Assets/Vehicles/vehicle_1.tscn",
+	"res://Assets/Vehicles/vehicle_2.tscn",
+	"res://Assets/Vehicles/vehicle_3.tscn"
+]
+var vehicle_instance = null
 var mouse_button_pressed = false
 
 # Called when the node enters the scene tree for the first time.
@@ -18,7 +21,7 @@ func _ready():
 	pivot = get_parent().get_node("CameraPivot")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-	add_child(vehicle_instance)
+	select_random_vehicle()
 	
 	for child in vehicle_instance.get_children():
 		vehicle_instance.remove_child(child)
@@ -36,6 +39,19 @@ func _ready():
 		
 	remove_child(vehicle_instance)
 
+func select_random_vehicle():
+
+	if vehicles_scenes.size() > 0:
+		randomize()  # Randomize the seed
+		var random_index = randi() % vehicles_scenes.size()  # Get random index
+		var selected_vehicle_scene = load(vehicles_scenes[random_index])  # Use load() instead of preload()
+		
+		if selected_vehicle_scene:
+			vehicle_instance = selected_vehicle_scene.instantiate()  # Instance the loaded scene
+			add_child(vehicle_instance)  # Add it to the scene tree
+		else:
+			print("Error: Could not load the selected vehicle scene.")
+	
 func _input(event):
 	if event is InputEventMouseButton:
 		if event.is_pressed():  # Mouse button down.
@@ -88,6 +104,19 @@ func update_gates_transparency(delta):
 				var gate_min_transparency = float(i) / float(max_visible_gates)  # Lower bound (e.g., 0.0 for the first gate)
 				var gate_max_transparency = float(i + 1) / float(max_visible_gates)  # Upper bound (e.g., 0.2, 0.4, etc.)
 				var target_transparency = lerp(gate_min_transparency, gate_max_transparency, proximity_fraction)
+				
+				set_mesh_local_transparency(gate_mesh, target_transparency)
+				
+	for i in range(max_visible_gates):
+		var adjusted_section_index = max(current_section_index, 0)
+		var index = (adjusted_section_index - (i + 1) + track_sections.size()) % track_sections.size()
+		var gate = get_previous_gate(index + 1)
+		if gate:
+			var gate_mesh = get_gate_mesh(gate)
+			if gate_mesh:
+				var gate_min_transparency = float(i) / float(max_visible_gates)  # Lower bound (e.g., 0.0 for the first gate behind)
+				var gate_max_transparency = float(i + 1) / float(max_visible_gates)  # Upper bound (e.g., 0.2, 0.4, etc.)
+				var target_transparency = lerp(gate_max_transparency, gate_min_transparency, proximity_fraction)  # Reverse lerp for less visibility
 				
 				set_mesh_local_transparency(gate_mesh, target_transparency)
 				

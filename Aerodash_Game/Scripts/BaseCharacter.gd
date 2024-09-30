@@ -150,6 +150,14 @@ func get_next_gate(section_index) -> Node3D:
 	else:
 		gate = track.get_child(0).get_node("Gate")
 	return gate
+
+func get_previous_gate(section_index) -> Node3D:
+	var gate = null
+	if section_index - 1 >= 0:
+		gate = track.get_child(section_index -  1).get_node("Gate")
+	else:
+		gate = track.get_child(track.get_child_count() - 1).get_node("Gate")
+	return gate
 	
 func on_section_passed(gate: Node3D):
 	if current_gate != gate:

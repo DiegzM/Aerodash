@@ -9,15 +9,19 @@ var pivot = null
 var random_x_offset = randf_range(-2.5, 2.5)
 var random_y_offset = randf_range(-2.5, 2.5) 
 
-var vehicle = preload("res://Assets/Vehicles/vehicle_1.tscn")
-var vehicle_instance = vehicle.instantiate()
+var vehicles_scenes = [
+	"res://Assets/Vehicles/vehicle_1.tscn",
+	"res://Assets/Vehicles/vehicle_2.tscn",
+	"res://Assets/Vehicles/vehicle_3.tscn"
+]
+var vehicle_instance = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
 	pivot = get_parent().get_node("Pivot")
 	
-	add_child(vehicle_instance)
+	select_random_vehicle()
 	
 	for child in vehicle_instance.get_children():
 		vehicle_instance.remove_child(child)
@@ -29,6 +33,19 @@ func _ready():
 			
 	remove_child(vehicle_instance)
 
+func select_random_vehicle():
+
+	if vehicles_scenes.size() > 0:
+		randomize()  # Randomize the seed
+		var random_index = randi() % vehicles_scenes.size()  # Get random index
+		var selected_vehicle_scene = load(vehicles_scenes[random_index])  # Use load() instead of preload()
+		
+		if selected_vehicle_scene:
+			vehicle_instance = selected_vehicle_scene.instantiate()  # Instance the loaded scene
+			add_child(vehicle_instance)  # Add it to the scene tree
+		else:
+			print("Error: Could not load the selected vehicle scene.")
+			
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):
 	pass

@@ -12,6 +12,7 @@ extends Node3D
 @onready var current_roll_speed: float = 0.0  # Variable to track the current roll speed
 @onready var camera = $Camera
 @onready var player = get_parent().get_node("Player")
+@onready var race_manager = get_tree().current_scene.get_node("RaceManager")
 @onready var speed = 0.0
 @onready var in_game = true
 @onready var mouse_delta = Vector2.ZERO
@@ -55,15 +56,16 @@ func apply_fov(delta):
 	camera.fov = lerp(camera.fov, target_fov, fov_smoothness * delta)
 
 func apply_rotation(delta):
-	var pitch_delta = deg_to_rad(-mouse_delta.y * mouse_sensitivity)
-	var yaw_delta = deg_to_rad(-mouse_delta.x * mouse_sensitivity)
+	if race_manager.race_started:
+		var pitch_delta = deg_to_rad(-mouse_delta.y * mouse_sensitivity)
+		var yaw_delta = deg_to_rad(-mouse_delta.x * mouse_sensitivity)
 
-	rotate_object_local(Vector3.UP, yaw_delta)
+		rotate_object_local(Vector3.UP, yaw_delta)
 
-	var x_axis = global_transform.basis.x.normalized()
-	global_transform.basis = Basis(x_axis, pitch_delta) * global_transform.basis
+		var x_axis = global_transform.basis.x.normalized()
+		global_transform.basis = Basis(x_axis, pitch_delta) * global_transform.basis
 
-	mouse_delta = Vector2.ZERO
+		mouse_delta = Vector2.ZERO
 
 func apply_camera_shake(delta):
 	# Reset camera position to the previous position before adding shake
