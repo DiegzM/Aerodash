@@ -132,7 +132,7 @@ func apply_rotation(state):
 	global_rotation = current_rotation
 
 func boost(delta):
-	if boost_pressed:
+	if boost_pressed and get_input_vector() != Vector3.ZERO:
 		if current_boost_time > 0:
 			boosting = true
 			current_boost_time -= delta

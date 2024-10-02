@@ -3,8 +3,11 @@ extends "res://Scripts/BaseCharacter.gd"
 @export var roll_speed: float = 5.0
 @export var roll_smoothness: float = 3
 
+@export var radius_offset = 4 # How many units to decrease the radius the AI uses to reach next gate, aka aim closer to the cneter
+
 @onready var current_roll_speed: float = 0
 
+var current_target_position = Vector3.ZERO
 var pivot = null
 var random_x_offset = randf_range(-2.5, 2.5)
 var random_y_offset = randf_range(-2.5, 2.5) 
@@ -19,6 +22,7 @@ var vehicle_instance = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
+	current_target_position = get_closest_point_to_gate()
 	pivot = get_parent().get_node("Pivot")
 	
 	select_random_vehicle()
@@ -60,10 +64,32 @@ func get_input_vector() -> Vector3:
 
 # Get the player's input for rotation based on mouse movement
 func get_input_rotation() -> Vector3: # Adjust the range as needed
-	var target_position = next_gate.global_transform.origin + (next_gate.transform.basis * Vector3(random_x_offset, random_y_offset, 0))
-	pivot.look_at(target_position)
+	var target_position = current_target_position
+	var current_forward = -pivot.transform.basis.z
+	var direction_to_target =(target_position - global_transform.origin).normalized()
+	
+	var angle_to_target = current_forward.angle_to(direction_to_target)
+	var rotation_speed = 5
+	var adjusted_forward = current_forward.lerp(direction_to_target, rotation_speed).normalized()
+	pivot.look_at(global_transform.origin + adjusted_forward, Vector3.UP)
 	
 	return pivot.global_rotation
+	
+
+func get_closest_point_to_gate() -> Vector3:
+	var gate = next_gate
+	var collision_shape = gate.get_node("Trigger/CollisionShape3D")
+	if collision_shape and collision_shape.shape is CylinderShape3D:
+		var radius = collision_shape.shape.radius - radius_offset
+		
+		var local_player_position = gate.to_local(global_transform.origin)
+		var player_xz = Vector2(local_player_position.x, local_player_position.z)
+		var closest_point_xz = player_xz.normalized() * min(player_xz.length(), radius)
+
+		var target_position = next_gate.to_global(Vector3(closest_point_xz.x, 0, closest_point_xz.y))
+		return target_position
+	else:
+		return Vector3.ZERO
 
 func _on_section_boundary_exited(body):
 	if body == self:  # Ensure that the body that exited is this BaseCharacter
@@ -74,6 +100,7 @@ func _on_section_boundary_exited(body):
 
 func on_section_passed(gate: Node3D):
 	super(gate)
+	current_target_position = get_closest_point_to_gate()
 	if current_gate != gate:
 		random_x_offset = randf_range(-2.5, 2.5)  # Adjust the range as needed
 		random_y_offset = randf_range(-2.5, 2.5) 

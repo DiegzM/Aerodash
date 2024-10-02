@@ -58,12 +58,11 @@ func update_leaderboard(delta):
 			current_row.text = str(characters[i].name)
 			current_row.modulate = Color(0.8, 0.8, 0.8, 0.5)
 			
-	var row = leaderboard_gui.get_node("Row")
-	if row:
+					
+	if leaderboard_gui.has_node("Row"):
+		var row = leaderboard_gui.get_node("Row")
 		leaderboard_gui.remove_child(row)
 		row.queue_free()
-			
-	
 	
 func update_wind(delta):
 	var player_speed = player.linear_velocity.length()
