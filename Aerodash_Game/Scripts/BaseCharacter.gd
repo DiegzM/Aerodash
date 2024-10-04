@@ -8,7 +8,8 @@ const BOOST_ACCELERATION = Vector3(500, 500, 500)
 const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
 const MAX_BOOST_SPEED = Vector3(110, 110, 110) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
 const MAX_BOOST_TIME = 7
-const BOOST_RECHARGE_SPEED = 0.2 # per second
+const MIN_BOOST_RECHARGE_SPEED = 0.4 # Boost recharge speed at first place
+const MAX_BOOST_RECHARGE_SPEED = 1.2 # Boost recharge speed at last place
 const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
 const MAX_UPWARD_FACTOR = 0.9 # How many times to increase speed when facing vertically up
 const ROLL_SPEED = 4.0
@@ -27,6 +28,7 @@ var boosting = false
 var current_boost_time = MAX_BOOST_TIME
 
 var current_acceleration = ACCELERATION
+var current_boost_recharge_speed = MIN_BOOST_RECHARGE_SPEED
 
 var track = null
 var previous_section = null
@@ -39,6 +41,7 @@ var next_gate = null
 var lap = 1
 
 var race_manager = null
+var characters = null
 var race_finished = false
 
 var target_velocity = Vector3.ZERO
@@ -46,6 +49,7 @@ var target_velocity = Vector3.ZERO
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	race_manager = get_tree().current_scene.get_node("RaceManager")
+	characters = race_manager.characters
 	track = get_tree().current_scene.get_node("Track")
 	if track:
 		for i in range(track.get_child_count()):
@@ -141,7 +145,17 @@ func boost(delta):
 	else:
 		boosting = false
 		if current_boost_time <= MAX_BOOST_TIME:
-			current_boost_time += BOOST_RECHARGE_SPEED * delta
+			var player_count = characters.size()
+			var player_index = -1
+			
+			for i in range(player_count):
+				if characters[i] == self:
+					player_index = i
+					break
+		
+			var position_factor = float(player_index) / float(player_count - 1)  
+			current_boost_recharge_speed = lerp(MIN_BOOST_RECHARGE_SPEED, MAX_BOOST_RECHARGE_SPEED, position_factor)
+			current_boost_time += current_boost_recharge_speed * delta
 	
 func get_next_gate(section_index) -> Node3D:
 	var gate = null

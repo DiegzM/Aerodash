@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://b8pg7ea0ofwkc"]
+[gd_scene load_steps=6 format=3 uid="uid://b8pg7ea0ofwkc"]
 
-[ext_resource type="Script" path="res://Scripts/vehicle_1_audio.gd" id="1_cakxh"]
+[ext_resource type="Script" path="res://Scripts/vehicle_audio.gd" id="1_cakxh"]
 [ext_resource type="AudioStream" uid="uid://cy5hqw3tigglc" path="res://Audio/vehicle_1_loop.mp3" id="2_1p6oh"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_w1o3i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_66b88"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4jwbe"]
 
@@ -13,6 +17,7 @@
 transform = Transform3D(2, 0, 0, 0, 0.4, 0, 0, 0, 10, 0, 0, 0)
 mesh = SubResource("BoxMesh_w1o3i")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_66b88")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 0.4, 0, 0, 0, 10, 0, 0, 0)

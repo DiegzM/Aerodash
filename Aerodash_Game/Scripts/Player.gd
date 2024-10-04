@@ -152,7 +152,7 @@ func _on_section_boundary_exited(body):
 
 func on_section_passed(gate: Node3D):
 	super(gate)
-
+	
 func get_gate_mesh(gate) -> MeshInstance3D:
 	var mesh = gate.get_node("Mesh/MeshInstance3D")
 	if mesh:

@@ -13,6 +13,7 @@ extends Node3D
 @onready var camera = $Camera
 @onready var player = get_parent().get_node("Player")
 @onready var race_manager = get_tree().current_scene.get_node("RaceManager")
+@onready var characters = race_manager.characters
 @onready var speed = 0.0
 @onready var in_game = true
 @onready var mouse_delta = Vector2.ZERO
