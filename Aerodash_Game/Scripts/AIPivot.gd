@@ -3,7 +3,10 @@ extends Node3D
 var AI = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	AI = get_parent().get_node("AI")
+	var content = get_parent().get_children()
+	for child in content:
+		if child is BaseCharacter:
+			AI = child
 	pass # Replace with function body.
 
 

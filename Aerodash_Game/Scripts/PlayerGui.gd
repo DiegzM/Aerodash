@@ -7,7 +7,7 @@ var place = 0
 var racer_count = 0
 
 var min_pitch = 0.9
-var max_pitch = 2.0
+var pitch_sensitivity = 0.2
 
 var elapsed_time = 0.0
 
@@ -66,9 +66,8 @@ func update_leaderboard(delta):
 	
 func update_wind(delta):
 	var player_speed = player.linear_velocity.length()
-	var max_speed = player.MAX_SPEED.length()
-	var normalized_speed = clamp(player_speed / max_speed, 0, 1)
-	var pitch = lerp(min_pitch, max_pitch, normalized_speed)
+	var target_pitch = min_pitch + (player_speed * pitch_sensitivity)
+	var pitch = lerp(min_pitch, target_pitch, 0.03)
 	
 	$Wind.pitch_scale = pitch
 

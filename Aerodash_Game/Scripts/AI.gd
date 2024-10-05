@@ -3,20 +3,25 @@ extends "res://Scripts/BaseCharacter.gd"
 @export var roll_speed: float = 5.0
 @export var roll_smoothness: float = 3
 
-@export var radius_offset = 4 # How many units to decrease the radius the AI uses to reach next gate, aka aim closer to the cneter
-@export var target_error = 1.0
+@export var radius_offset = 4.0 # How many units to decrease the radius the AI uses to reach next gate, aka aim closer to the cneter
+@export var min_target_error = 0.0
+@export var max_target_error = 10.0
 
-@export var min_boost_probability = 0.002 # How likely AI will boost at first place any frame
-@export var max_boost_probability = 0.10 # How likely AI will boost at last place any frame
-@export var boost_cutoff_probability = 0.005 # How likely AI will stop boosting at any frame
+@export var min_boost_probability = 0.0016 # How likely AI will boost at first place any frame
+@export var max_boost_probability = 0.0064 # How likely AI will boost at last place any frame
+@export var boost_cutoff_probability = 0.01 # How likely AI will stop boosting at any frame
 @export var min_boost_timeout = 3 # Minimum how long to wait before boosting again, after running out of boost
 @export var max_boost_timeout = 10 # Maximum how long to wait before boosting again, after running out of boost
+
+@export var min_adjustment_speed = 1.0
+@export var max_adjustment_speed = 24.0
 
 @onready var current_roll_speed: float = 0
 
 var current_boost_probability = 0
 var current_boost_timeout = 0
 var current_target_position = Vector3.ZERO
+var target_error = 0
 var pivot = null
 var random_x_offset = randf_range(-2.5, 2.5)
 var random_y_offset = randf_range(-2.5, 2.5) 
@@ -31,6 +36,8 @@ var vehicle_instance = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
+	create_path(3)
+	target_error = randf_range(min_target_error, max_target_error)
 	current_target_position = calculate_target_position(next_gate)
 	pivot = get_parent().get_node("Pivot")
 	
@@ -76,52 +83,39 @@ func get_input_vector() -> Vector3:
 # Get the player's input for rotation based on mouse movement
 func get_input_rotation() -> Vector3:
 	
-	if global_transform.origin.distance_to(current_target_position) < 30.0:
-		current_target_position = calculate_target_position(get_next_gate(current_section_index + 1))
-	var distance_to_target = current_target_position - global_transform.origin
-	var direction_to_target = distance_to_target.normalized()
-	var adjustment_vector = direction_to_target - linear_velocity.normalized()
-
-	if adjustment_vector.length() > randf_range(0.01, 1.0):
-		adjustment_vector = adjustment_vector.normalized() * 5.0 
-
-	# Combine the target direction and the adjustment vector
-	var corrected_direction = direction_to_target + adjustment_vector
+	var target_position = Vector3.ZERO
+	var gate_z_distance = abs((global_transform.origin - next_gate.global_transform.origin).dot(next_gate.transform.basis.z))
 	
-	var current_rotation = pivot.global_rotation
-	# Rotate the AI to face the corrected direction
-	pivot.look_at(global_transform.origin + corrected_direction)
-	var target_rotation = pivot.global_rotation
-	current_rotation = target_rotation
-	pivot.global_rotation = current_rotation
-	# Return the AI's new global rotation after applying the adjustment
+	if gate_z_distance < 0.0:
+		target_position = calculate_target_position(get_next_gate(current_section_index + 1))
+	else:
+		target_position = calculate_target_position(next_gate)
+
+	var direction_to_target = (target_position - global_transform.origin).normalized()
+	var current_velocity_direction = linear_velocity.normalized()
+	var alignment = current_velocity_direction.dot(direction_to_target)
+
+	if alignment > 0.99:
+		pivot.look_at(target_position)
+	else:
+		var drift_strength = linear_velocity.length()
+		var adjustment_vector = (direction_to_target - current_velocity_direction) * drift_strength
+		var current_adjustment_speed = lerp(min_adjustment_speed, max_adjustment_speed, 1.0 - alignment)
+		var adjusted_rotation = lerp(global_transform.origin, global_transform.origin + adjustment_vector, 0.01 * current_adjustment_speed)
+		pivot.look_at(adjusted_rotation)
+
+
 	return pivot.global_rotation
 
-func determine_boost(delta):
-	if current_boost_timeout <= 0:
-		var player_count = characters.size()
-		var player_index = -1
-		
-		for i in range(player_count):
-			if characters[i] == self:
-				player_index = i
-				break
-		
-		if player_index != -1:
-			var position_factor = float(player_index) / float(player_count - 1)  # Relative position from 0 (first place) to 1 (last place)
-			current_boost_probability = lerp(min_boost_probability, max_boost_probability, position_factor)
-			if randf() < current_boost_probability or boosting:
-				if randf() < boost_cutoff_probability:
-					boost_pressed = false
-				else:
-					boost_pressed = true
-					if current_boost_time <= 0:
-						current_boost_timeout = lerp(max_boost_timeout, min_boost_timeout, position_factor)
-			else:
-				boost_pressed = false
-	else:
-		boost_pressed = false
-		current_boost_timeout -= delta
+func create_path(gates_ahead: int) -> Vector3:
+	var predicted_position = Vector3.ZERO
+	var next_gate = current_gate
+	for i in range(gates_ahead):
+		next_gate = get_next_gate(current_section_index + i)
+		predicted_position += calculate_target_position(next_gate)
+	predicted_position /= gates_ahead
+	
+	return predicted_position
 	
 func predict_future_position(time_ahead: float) -> Vector3:
 	var current_velocity = linear_velocity
@@ -174,6 +168,32 @@ func get_closest_point_to_gate(gate) -> Vector3:
 	else:
 		return Vector3.ZERO
 
+func determine_boost(delta):
+	if current_boost_timeout <= 0:
+		var player_count = characters.size()
+		var player_index = -1
+		
+		for i in range(player_count):
+			if characters[i] == self:
+				player_index = i
+				break
+		
+		if player_index != -1:
+			var position_factor = float(player_index) / float(player_count - 1)  # Relative position from 0 (first place) to 1 (last place)
+			current_boost_probability = lerp(min_boost_probability, max_boost_probability, position_factor)
+			if randf() < current_boost_probability or boosting or current_section_index == -1:
+				if randf() < boost_cutoff_probability:
+					boost_pressed = false
+				else:
+					boost_pressed = true
+					if current_boost_time <= 0:
+						current_boost_timeout = lerp(max_boost_timeout, min_boost_timeout, position_factor)
+			else:
+				boost_pressed = false
+	else:
+		boost_pressed = false
+		current_boost_timeout -= delta
+		
 func _on_section_boundary_exited(body):
 	if body == self:  # Ensure that the body that exited is this BaseCharacter
 		pivot.global_rotation = current_gate.global_rotation
@@ -187,8 +207,8 @@ func on_section_passed(gate: Node3D):
 	if current_gate != gate:
 		random_x_offset = randf_range(-2.5, 2.5)  # Adjust the range as needed
 		random_y_offset = randf_range(-2.5, 2.5) 
-	var mesh = MeshInstance3D.new()
-	mesh.mesh = SphereMesh.new()
-	mesh.scale = Vector3(2,2,2)
-	get_tree().current_scene.add_child(mesh)
-	mesh.global_transform.origin = current_target_position
+	#var mesh = MeshInstance3D.new()
+	#mesh.mesh = SphereMesh.new()
+	#mesh.scale = Vector3(2,2,2)
+	#get_tree().current_scene.add_child(mesh)
+	#mesh.global_transform.origin = current_target_position
