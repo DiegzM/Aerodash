@@ -43,10 +43,11 @@ func toggle_mouse_mode():
 		in_game = true
 		
 func _physics_process(delta):
-	global_transform.origin = player.global_transform.origin
-	apply_fov(delta)
-	apply_rotation(delta)
-	apply_camera_shake(delta)
+	if not player.dead:
+		global_transform.origin = player.global_transform.origin
+		apply_fov(delta)
+		apply_rotation(delta)
+		apply_camera_shake(delta)
 		
 func apply_fov(delta):
 	var current_position = global_transform.origin

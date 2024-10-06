@@ -18,6 +18,14 @@ const ROLL_SPEED = 4.0
 const MOVEMENT_DAMPING = 0.95 # Closer to 1 is slower
 const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
 
+# COLLISION
+const COLLISION_SPEED = 40 # How fast a collision has to be in order to crash another racer (or get crashed)
+const COLLISION_DIFFERENCE = 3 # If the collision global speed difference is within this value, both racers will crash.
+
+# DEATH
+const RESPAWN_TIME = 1.5 # How long to wait if killed
+const FORCEFIELD_TIME = 4.0 # How long to be protected after respawning
+
 # ROTATION SMOOTHNESS
 const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = faster
 const LERP_VELOCITY = 0.9 # Incase speed reaches max, allow for smooth slowdown
@@ -40,14 +48,22 @@ var next_gate = null
 
 var lap = 1
 
+var current_respawn_time = RESPAWN_TIME
+var current_forcefield_time = FORCEFIELD_TIME
+var dead = false
+
 var race_manager = null
 var characters = null
 var race_finished = false
+
+var collision_box = null
 
 var target_velocity = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	set_contact_monitor(true)
+	max_contacts_reported = 10
 	race_manager = get_tree().current_scene.get_node("RaceManager")
 	characters = race_manager.characters
 	track = get_tree().current_scene.get_node("Track")
@@ -68,10 +84,15 @@ func _ready():
 func _physics_process(delta):
 	if (race_manager.race_started and not race_finished):
 		boost(delta)
+		forcefield_time(delta)
+	if dead:
+		respawn(delta)
+		death_movement()
 	
 func _integrate_forces(state):
 	set_sleeping(false)
-	if (race_manager.race_started and not race_finished):
+	if (race_manager.race_started and not race_finished and not dead):
+		handle_collisions()
 		apply_rotation(state)
 		apply_movement(state)
 	
@@ -118,7 +139,7 @@ func apply_movement(state):
 	if speed > current_max_speed:
 		target_velocity = state.linear_velocity.normalized() * current_max_speed
 		state.linear_velocity = lerp(state.linear_velocity, target_velocity, LERP_VELOCITY)
-	
+		
 	apply_force(local_force)
 
 func apply_rotation(state):
@@ -134,6 +155,24 @@ func apply_rotation(state):
 
 	# Apply the new smooth rotation
 	global_rotation = current_rotation
+
+func death_movement(): 
+	var local_force = Vector3(0, -ACCELERATION.y, 0)
+	apply_force(local_force)
+	
+func respawn(delta):
+	current_respawn_time -= delta
+	if current_respawn_time <= 0:
+		current_respawn_time = RESPAWN_TIME
+		dead = false
+		global_transform = current_gate.global_transform
+		linear_velocity = Vector3.ZERO
+		
+func forcefield_time(delta):
+	if current_forcefield_time > 0:
+		current_forcefield_time -= delta
+	if dead:
+		current_forcefield_time = FORCEFIELD_TIME
 
 func boost(delta):
 	if boost_pressed and get_input_vector() != Vector3.ZERO:
@@ -199,11 +238,30 @@ func on_section_passed(gate: Node3D):
 		if lap > race_manager.laps:
 			race_finished = true
 
+func handle_collisions():
+	var colliding_bodies = get_colliding_bodies()
+	for i in range(colliding_bodies.size()):
+		var body = colliding_bodies[i]
+		if body and body is BaseCharacter:
+			var relative_velocity = (linear_velocity - body.linear_velocity).length()
+			if relative_velocity >= COLLISION_SPEED:
+				if linear_velocity.length() > body.linear_velocity.length() + COLLISION_DIFFERENCE:
+					if body.current_forcefield_time <= 0:
+						body.dead = true
+				elif linear_velocity.length() < body.linear_velocity.length() - COLLISION_DIFFERENCE:
+					if current_forcefield_time <= 0:
+						dead = true
+				else:
+					if current_forcefield_time <= 0:
+						dead = true
+					if body.current_forcefield_time <= 0:
+						body.dead = true
+			
 func _on_section_boundary_exited(body):
-	if body == self:  # Ensure that the body that exited is this BaseCharacter
+	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
 		global_transform = current_gate.global_transform
 		linear_velocity = Vector3.ZERO
-		
+
 # Placeholder method, to be implemented by subclasses (Player or AI)
 func get_input_vector() -> Vector3:
 	return Vector3.ZERO

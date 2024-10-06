@@ -39,6 +39,9 @@ func _ready():
 		
 	remove_child(vehicle_instance)
 
+	if $CollisionShape3D:
+		collision_box = $CollisionShape3D
+
 func select_random_vehicle():
 
 	if vehicles_scenes.size() > 0:
@@ -166,4 +169,3 @@ func set_mesh_local_transparency(mesh, transparency):
 			mesh.transparency = transparency
 	else:
 			mesh.transparency = transparency
-		

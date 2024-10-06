@@ -1,27 +1,53 @@
-[gd_scene load_steps=6 format=3 uid="uid://b5orf5fub1tmo"]
+[gd_scene load_steps=11 format=3 uid="uid://b5orf5fub1tmo"]
 
+[ext_resource type="ArrayMesh" uid="uid://bagm26hxe8lbu" path="res://Assets/Vehicles/vehicle_1.obj" id="1_7sweu"]
 [ext_resource type="Script" path="res://Scripts/vehicle_audio.gd" id="1_ulg3f"]
 [ext_resource type="AudioStream" uid="uid://cc8hnhnxs8kg0" path="res://Audio/vehicle_3_loop.mp3" id="2_31yvk"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_w1o3i"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68ljb"]
+albedo_color = Color(0.109804, 0.109804, 0.109804, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v3q0j"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s55nf"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_phlxr"]
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_4jwbe"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qvm3"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 7.24
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bs0ey"]
+albedo_color = Color(0.121569, 0.14902, 0.2, 1)
+metallic = 0.7
+metallic_specular = 0.56
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t8e28"]
+albedo_color = Color(1, 0, 0, 1)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_worsw"]
 
 [node name="vehicle_3" type="RigidBody3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(2, 0, 0, 0, 0.4, 0, 0, 0, 10, 0, 0, 0)
-mesh = SubResource("BoxMesh_w1o3i")
+transform = Transform3D(-0.85, 2.96469e-16, -1.28346e-07, 2.96469e-16, 0.85, -2.96469e-16, 1.28346e-07, -2.96469e-16, -0.85, 2.08165e-12, 2.08165e-12, 1.61596)
+mesh = ExtResource("1_7sweu")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("StandardMaterial3D_v3q0j")
+surface_material_override/0 = SubResource("StandardMaterial3D_68ljb")
+surface_material_override/1 = SubResource("StandardMaterial3D_s55nf")
+surface_material_override/2 = SubResource("StandardMaterial3D_phlxr")
+surface_material_override/3 = SubResource("StandardMaterial3D_5qvm3")
+surface_material_override/4 = SubResource("StandardMaterial3D_bs0ey")
+surface_material_override/5 = SubResource("StandardMaterial3D_t8e28")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(2, 0, 0, 0, 0.4, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("BoxShape3D_4jwbe")
+transform = Transform3D(2.6, 0, 0, 0, 1.5, 0, 0, 0, 7.499, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+shape = SubResource("BoxShape3D_worsw")
 
 [node name="Audio" type="Node3D" parent="."]
 script = ExtResource("1_ulg3f")
@@ -35,3 +61,5 @@ unit_size = 100.0
 pitch_scale = 0.7
 autoplay = true
 max_distance = 700.0
+
+[node name="CrashSound" type="AudioStreamPlayer3D" parent="Audio"]

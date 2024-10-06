@@ -52,6 +52,9 @@ func _ready():
 			child.body = self
 			
 	remove_child(vehicle_instance)
+	
+	if $CollisionShape3D:
+		collision_box = $CollisionShape3D
 
 func select_random_vehicle():
 
@@ -193,7 +196,7 @@ func determine_boost(delta):
 	else:
 		boost_pressed = false
 		current_boost_timeout -= delta
-		
+
 func _on_section_boundary_exited(body):
 	if body == self:  # Ensure that the body that exited is this BaseCharacter
 		pivot.global_rotation = current_gate.global_rotation
