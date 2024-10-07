@@ -6,10 +6,17 @@ extends Node3D
 
 @export var fov_smoothness: float = 10  # Smoothness for the FOV change
 @export var max_shake_magnitude: float = 0.2
+@export var collision_shake_magnitude: float = 1.8
+@export var collision_shake_magnitude_damping: float = 0.04
+@export var collision_shake_fov: float = 5
+@export var collision_shake_fov_damping: float = 0.1
 
 @export var mouse_sensitivity: float = 0.3
 
 @onready var current_roll_speed: float = 0.0  # Variable to track the current roll speed
+@onready var current_collision_shake_magnitude: float = collision_shake_magnitude
+@onready var current_collision_fov: float = collision_shake_fov
+@onready var knocking_down = false
 @onready var camera = $Camera
 @onready var player = get_parent().get_node("Player")
 @onready var race_manager = get_tree().current_scene.get_node("RaceManager")
@@ -20,9 +27,12 @@ extends Node3D
 @onready var previous_position = global_transform.origin
 @onready var previous_camera_position = camera.transform.origin
 @onready var shake_offset = Vector3.ZERO
+@onready var camera_initial_orientation: Basis
+@onready var debug = false
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	camera_initial_orientation = camera.transform.basis
 
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):
@@ -43,11 +53,32 @@ func toggle_mouse_mode():
 		in_game = true
 		
 func _physics_process(delta):
-	if not player.dead:
-		global_transform.origin = player.global_transform.origin
-		apply_fov(delta)
-		apply_rotation(delta)
-		apply_camera_shake(delta)
+	if get_tree().current_scene.has_node("DebugCamera"):
+		var debug_camera = get_tree().current_scene.get_node("DebugCamera")
+		if debug_camera.debug:
+			debug = true
+		else:
+			debug = false
+	
+	if not debug:
+		if not player.dead:
+			global_transform.origin = player.global_transform.origin
+			camera.transform.basis = camera_initial_orientation
+			apply_fov(delta)
+			apply_rotation(delta)
+			apply_camera_shake(delta)
+			if player.knockdown or knocking_down:
+				if not knocking_down:
+					knocking_down = true
+				if knocking_down and current_collision_shake_magnitude <= 0:
+					knocking_down = false
+				apply_collision_camera_shake(delta)
+			else:
+				current_collision_shake_magnitude = collision_shake_magnitude
+				current_collision_fov = collision_shake_fov
+		else:
+			camera.look_at(player.global_transform.origin)
+			apply_collision_camera_shake(delta)
 		
 func apply_fov(delta):
 	var current_position = global_transform.origin
@@ -81,6 +112,24 @@ func apply_camera_shake(delta):
 		0
 	)
 
-	shake_offset = shake_offset.lerp(target_shake_offset, fov_smoothness * delta)
+func apply_collision_camera_shake(delta):
+	camera.transform.origin = previous_camera_position
+
+	var shake_strength = clamp(speed / max_fov_speed, 0, 1) * current_collision_shake_magnitude
+
+	var target_shake_offset = Vector3(
+		randf_range(-shake_strength, shake_strength),
+		randf_range(-shake_strength, shake_strength),
+		0
+	)
+	var target_fov = randf_range(camera.fov - current_collision_fov, camera.fov + current_collision_fov)
+	camera.fov = target_fov
+	
+	if current_collision_fov > 0:
+		current_collision_fov -= collision_shake_fov_damping
+		
+	if current_collision_shake_magnitude > 0:
+		current_collision_shake_magnitude -= collision_shake_magnitude_damping
+
 	previous_camera_position = camera.transform.origin
-	camera.transform.origin += shake_offset
+	camera.transform.origin += target_shake_offset

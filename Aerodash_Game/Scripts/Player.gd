@@ -15,9 +15,12 @@ var vehicles_scenes = [
 var vehicle_instance = null
 var mouse_button_pressed = false
 
+var debug = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
+	
 	pivot = get_parent().get_node("CameraPivot")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -64,9 +67,17 @@ func _input(event):
 
 func _physics_process(delta):
 	super(delta)
+	
+	if get_tree().current_scene.has_node("DebugCamera"):
+		var debug_camera = get_tree().current_scene.get_node("DebugCamera")
+		if debug_camera.debug:
+			debug = true
+		else:
+			debug = false
+		
 	var target_roll_speed = 0.0
 
-	if race_manager.race_started:
+	if race_manager.race_started and not debug:
 		if Input.is_action_pressed("roll_left"):
 			target_roll_speed = ROLL_SPEED
 		elif Input.is_action_pressed("roll_right"):
@@ -126,19 +137,20 @@ func update_gates_transparency(delta):
 # Get the player's input for movement
 func get_input_vector() -> Vector3:
 	var direction = Vector3.ZERO
-
-	if Input.is_action_pressed("move_forward"):
-		direction -= pivot.transform.basis.z
-	if Input.is_action_pressed("move_backward"):
-		direction += pivot.transform.basis.z
-	if Input.is_action_pressed("move_left"):
-		direction -= pivot.transform.basis.x
-	if Input.is_action_pressed("move_right"):
-		direction += pivot.transform.basis.x
-	if Input.is_action_pressed("move_up"):
-		direction += pivot.transform.basis.y
-	if Input.is_action_pressed("move_down"):
-		direction -= pivot.transform.basis.y
+	
+	if not debug:
+		if Input.is_action_pressed("move_forward"):
+			direction -= pivot.transform.basis.z
+		if Input.is_action_pressed("move_backward"):
+			direction += pivot.transform.basis.z
+		if Input.is_action_pressed("move_left"):
+			direction -= pivot.transform.basis.x
+		if Input.is_action_pressed("move_right"):
+			direction += pivot.transform.basis.x
+		if Input.is_action_pressed("move_up"):
+			direction += pivot.transform.basis.y
+		if Input.is_action_pressed("move_down"):
+			direction -= pivot.transform.basis.y
 
 	return direction.normalized()
 
@@ -147,7 +159,7 @@ func get_input_rotation() -> Vector3:
 	return input_rotation
 	
 func _on_section_boundary_exited(body):
-	if body == self:
+	if body == self and not dead:
 		pivot.global_rotation = current_gate.global_rotation
 		global_transform = current_gate.global_transform
 		global_rotation = current_gate.global_rotation

@@ -6,10 +6,11 @@ extends RigidBody3D
 const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const BOOST_ACCELERATION = Vector3(500, 500, 500)
 const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
-const MAX_BOOST_SPEED = Vector3(110, 110, 110) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
+const MIN_BOOST_SPEED = Vector3(110, 110, 110) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
+const MAX_BOOST_SPEED = Vector3(160, 160, 160)
 const MAX_BOOST_TIME = 7
 const MIN_BOOST_RECHARGE_SPEED = 0.4 # Boost recharge speed at first place
-const MAX_BOOST_RECHARGE_SPEED = 1.2 # Boost recharge speed at last place
+const MAX_BOOST_RECHARGE_SPEED = 2.4 # Boost recharge speed at last place
 const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
 const MAX_UPWARD_FACTOR = 0.9 # How many times to increase speed when facing vertically up
 const ROLL_SPEED = 4.0
@@ -21,6 +22,7 @@ const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
 # COLLISION
 const COLLISION_SPEED = 40 # How fast a collision has to be in order to crash another racer (or get crashed)
 const COLLISION_DIFFERENCE = 3 # If the collision global speed difference is within this value, both racers will crash.
+const KNOCKDOWN_STREAK_TIME = 4 # Maximum much time between knockdowns to count as a streak
 
 # DEATH
 const RESPAWN_TIME = 1.5 # How long to wait if killed
@@ -34,6 +36,7 @@ const LERP_VELOCITY = 0.9 # Incase speed reaches max, allow for smooth slowdown
 var boost_pressed = false
 var boosting = false
 var current_boost_time = MAX_BOOST_TIME
+var current_boost_speed = MIN_BOOST_SPEED
 
 var current_acceleration = ACCELERATION
 var current_boost_recharge_speed = MIN_BOOST_RECHARGE_SPEED
@@ -49,8 +52,11 @@ var next_gate = null
 var lap = 1
 
 var current_respawn_time = RESPAWN_TIME
-var current_forcefield_time = FORCEFIELD_TIME
+var current_forcefield_time = 0
 var dead = false
+var knockdown = false
+var knockdown_streak = 0
+var current_knockdown_streak_time = 0
 
 var race_manager = null
 var characters = null
@@ -82,9 +88,14 @@ func _ready():
 				boundary.body_exited.connect(_on_section_boundary_exited)
 
 func _physics_process(delta):
+	knockdown = false
 	if (race_manager.race_started and not race_finished):
 		boost(delta)
 		forcefield_time(delta)
+		smoke(delta)
+		if not dead:
+			handle_collisions()
+			knockdown_time(delta)
 	if dead:
 		respawn(delta)
 		death_movement()
@@ -92,7 +103,6 @@ func _physics_process(delta):
 func _integrate_forces(state):
 	set_sleeping(false)
 	if (race_manager.race_started and not race_finished and not dead):
-		handle_collisions()
 		apply_rotation(state)
 		apply_movement(state)
 	
@@ -104,7 +114,7 @@ func apply_movement(state):
 	current_acceleration = ACCELERATION
 	
 	if boosting:
-		current_max_speed = MAX_BOOST_SPEED.length()
+		current_max_speed = current_boost_speed.length()
 		current_acceleration = BOOST_ACCELERATION
 		
 	var local_force = Vector3(
@@ -168,13 +178,45 @@ func respawn(delta):
 		global_transform = current_gate.global_transform
 		linear_velocity = Vector3.ZERO
 		
+func smoke(delta):
+	if self.has_node("Smoke"):
+		if dead:
+			$Smoke.emitting = true
+			$Smoke.visible = true
+		else:
+			$Smoke.emitting = false
+			$Smoke.visible = false
+		
+	
 func forcefield_time(delta):
 	if current_forcefield_time > 0:
 		current_forcefield_time -= delta
 	if dead:
 		current_forcefield_time = FORCEFIELD_TIME
 
+func knockdown_time(delta):
+	if current_knockdown_streak_time > 0:
+		current_knockdown_streak_time -= delta
+	else:
+		knockdown_streak = 0
+			
+	if knockdown:
+		knockdown_streak += 1
+		current_knockdown_streak_time = KNOCKDOWN_STREAK_TIME
+	
 func boost(delta):
+	var player_index = -1
+	for i in range(characters.size()):
+		if characters[i] == self:
+			player_index = i
+			break
+	
+	if player_index != -1:
+		var position_factor = float(player_index) / float(characters.size() - 1)  # Relative position from 0 (first place) to 1 (last place)
+		current_boost_speed = lerp(MIN_BOOST_SPEED, MAX_BOOST_SPEED, position_factor)
+	else:
+		current_boost_speed = MIN_BOOST_SPEED
+		
 	if boost_pressed and get_input_vector() != Vector3.ZERO:
 		if current_boost_time > 0:
 			boosting = true
@@ -184,15 +226,8 @@ func boost(delta):
 	else:
 		boosting = false
 		if current_boost_time <= MAX_BOOST_TIME:
-			var player_count = characters.size()
-			var player_index = -1
 			
-			for i in range(player_count):
-				if characters[i] == self:
-					player_index = i
-					break
-		
-			var position_factor = float(player_index) / float(player_count - 1)  
+			var position_factor = float(player_index) / float(characters.size() - 1)  
 			current_boost_recharge_speed = lerp(MIN_BOOST_RECHARGE_SPEED, MAX_BOOST_RECHARGE_SPEED, position_factor)
 			current_boost_time += current_boost_recharge_speed * delta
 	
@@ -213,7 +248,7 @@ func get_previous_gate(section_index) -> Node3D:
 	return gate
 	
 func on_section_passed(gate: Node3D):
-	if current_gate != gate:
+	if current_gate != gate and not dead:
 		previous_section = current_section
 		current_section = gate.get_parent()
 		current_gate = gate
@@ -247,6 +282,7 @@ func handle_collisions():
 			if relative_velocity >= COLLISION_SPEED:
 				if linear_velocity.length() > body.linear_velocity.length() + COLLISION_DIFFERENCE:
 					if body.current_forcefield_time <= 0:
+						knockdown = true
 						body.dead = true
 				elif linear_velocity.length() < body.linear_velocity.length() - COLLISION_DIFFERENCE:
 					if current_forcefield_time <= 0:
@@ -255,10 +291,12 @@ func handle_collisions():
 					if current_forcefield_time <= 0:
 						dead = true
 					if body.current_forcefield_time <= 0:
+						knockdown = true
 						body.dead = true
 			
 func _on_section_boundary_exited(body):
 	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
+		print(dead)
 		global_transform = current_gate.global_transform
 		linear_velocity = Vector3.ZERO
 

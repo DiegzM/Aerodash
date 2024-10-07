@@ -5,13 +5,17 @@ extends "res://Scripts/BaseCharacter.gd"
 
 @export var radius_offset = 4.0 # How many units to decrease the radius the AI uses to reach next gate, aka aim closer to the cneter
 @export var min_target_error = 0.0
-@export var max_target_error = 10.0
+@export var max_target_error = 4.0
 
-@export var min_boost_probability = 0.0016 # How likely AI will boost at first place any frame
-@export var max_boost_probability = 0.0064 # How likely AI will boost at last place any frame
-@export var boost_cutoff_probability = 0.01 # How likely AI will stop boosting at any frame
-@export var min_boost_timeout = 3 # Minimum how long to wait before boosting again, after running out of boost
-@export var max_boost_timeout = 10 # Maximum how long to wait before boosting again, after running out of boost
+@export var min_boost_probability = 0.0032 # How likely AI will boost at first place any frame
+@export var max_boost_probability = 0.1 # How likely AI will boost at last place any frame
+@export var boost_cutoff_probability = 0.003 # How likely AI will stop boosting at any frame
+@export var min_boost_timeout = 2 # Minimum how long to wait before boosting again, after running out of boost
+@export var max_boost_timeout = 4 # Maximum how long to wait before boosting again, after running out of boost
+
+@export var knockdown_chance = 0.004 # How likely AI will try to knockdown the racer infront any frame if knockdown_distance close enough
+@export var knockdown_distance = 50
+@export var knockdown_try_time = 5 # How long to try knocking down before giving up
 
 @export var min_adjustment_speed = 1.0
 @export var max_adjustment_speed = 24.0
@@ -21,6 +25,8 @@ extends "res://Scripts/BaseCharacter.gd"
 var current_boost_probability = 0
 var current_boost_timeout = 0
 var current_target_position = Vector3.ZERO
+var current_knockdown_try_time = 0
+var knocking_down = false
 var target_error = 0
 var pivot = null
 var random_x_offset = randf_range(-2.5, 2.5)
@@ -36,7 +42,6 @@ var vehicle_instance = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	super()
-	create_path(3)
 	target_error = randf_range(min_target_error, max_target_error)
 	current_target_position = calculate_target_position(next_gate)
 	pivot = get_parent().get_node("Pivot")
@@ -76,6 +81,7 @@ func _input(event):
 func _physics_process(delta):
 	super(delta)
 	if race_manager.race_started:
+		determine_knockdown(delta)
 		determine_boost(delta)
 		
 # Get the player's input for movement
@@ -110,15 +116,31 @@ func get_input_rotation() -> Vector3:
 
 	return pivot.global_rotation
 
-func create_path(gates_ahead: int) -> Vector3:
-	var predicted_position = Vector3.ZERO
-	var next_gate = current_gate
-	for i in range(gates_ahead):
-		next_gate = get_next_gate(current_section_index + i)
-		predicted_position += calculate_target_position(next_gate)
-	predicted_position /= gates_ahead
+func determine_knockdown(delta):
+	var target_player = null
+	var index = -1
+		
+	for i in range(characters.size()):
+		if characters[i] == self:
+			index = i
+			break
+			
+	if index > 0:
+		target_player = race_manager.characters[index - 1]
 	
-	return predicted_position
+	if target_player:
+		if global_transform.origin.distance_to(target_player.global_transform.origin) <= knockdown_distance:
+			if randf() <= knockdown_chance and not knocking_down and not target_player.current_forcefield_time > 0:
+				knocking_down = true
+				current_knockdown_try_time = knockdown_try_time
+			if knocking_down:
+				current_knockdown_try_time -= delta
+				if current_knockdown_try_time <= 0:
+					knocking_down = false
+		else:
+			knocking_down = false
+	else:
+		knocking_down = false
 	
 func predict_future_position(time_ahead: float) -> Vector3:
 	var current_velocity = linear_velocity
@@ -142,6 +164,19 @@ func calculate_target_position(gate) -> Vector3:
 	var collision_shape = gate.get_node("Trigger/CollisionShape3D")
 	
 	if collision_shape and collision_shape.shape is CylinderShape3D:
+		if knocking_down:
+			var index = -1
+			var target_player = null
+			for i in range(characters.size()):
+				if characters[i] == self:
+					index = i
+					break
+					
+			if index > 0:
+				target_player = race_manager.characters[index - 1]
+			if target_player:
+				return target_player.global_transform.origin
+					
 		var radius = collision_shape.scale.x - radius_offset
 		var error_x = randf_range(-target_error, target_error)
 		var error_y = randf_range(-target_error, target_error)
@@ -184,13 +219,15 @@ func determine_boost(delta):
 		if player_index != -1:
 			var position_factor = float(player_index) / float(player_count - 1)  # Relative position from 0 (first place) to 1 (last place)
 			current_boost_probability = lerp(min_boost_probability, max_boost_probability, position_factor)
-			if randf() < current_boost_probability or boosting or current_section_index == -1:
+			if randf() < current_boost_probability or boosting:
 				if randf() < boost_cutoff_probability:
 					boost_pressed = false
 				else:
 					boost_pressed = true
 					if current_boost_time <= 0:
 						current_boost_timeout = lerp(max_boost_timeout, min_boost_timeout, position_factor)
+			elif current_section_index == -1:
+				boost_pressed = true
 			else:
 				boost_pressed = false
 	else:
@@ -198,7 +235,7 @@ func determine_boost(delta):
 		current_boost_timeout -= delta
 
 func _on_section_boundary_exited(body):
-	if body == self:  # Ensure that the body that exited is this BaseCharacter
+	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
 		pivot.global_rotation = current_gate.global_rotation
 		global_transform = current_gate.global_transform
 		global_rotation = current_gate.global_rotation
@@ -206,7 +243,8 @@ func _on_section_boundary_exited(body):
 
 func on_section_passed(gate: Node3D):
 	super(gate)
-	current_target_position = calculate_target_position(next_gate)
+	if not dead:
+		current_target_position = calculate_target_position(next_gate)
 	if current_gate != gate:
 		random_x_offset = randf_range(-2.5, 2.5)  # Adjust the range as needed
 		random_y_offset = randf_range(-2.5, 2.5) 

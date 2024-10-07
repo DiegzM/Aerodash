@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://b8pg7ea0ofwkc"]
+[gd_scene load_steps=24 format=3 uid="uid://b8pg7ea0ofwkc"]
 
 [ext_resource type="ArrayMesh" uid="uid://bagm26hxe8lbu" path="res://Assets/Vehicles/vehicle_1.obj" id="1_0xc5l"]
 [ext_resource type="Script" path="res://Scripts/vehicle_audio.gd" id="1_cakxh"]
 [ext_resource type="AudioStream" uid="uid://cy5hqw3tigglc" path="res://Audio/vehicle_1_loop.mp3" id="2_1p6oh"]
+[ext_resource type="Texture2D" uid="uid://2mus2o3hh607" path="res://Assets/Effects/smoke.webp" id="2_yahw1"]
 [ext_resource type="AudioStream" uid="uid://c04ql44xtj1uc" path="res://Audio/crash_1.mp3" id="4_fwno1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b8d5v"]
@@ -32,10 +33,74 @@ emission = Color(1, 0, 0, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4jwbe"]
 
+[sub_resource type="CurveTexture" id="CurveTexture_kushy"]
+
+[sub_resource type="Curve" id="Curve_eyeco"]
+max_value = 200.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_pfycl"]
+curve = SubResource("Curve_eyeco")
+
+[sub_resource type="Gradient" id="Gradient_fygn1"]
+offsets = PackedFloat32Array(0.00458716, 0.105505, 0.316514)
+colors = PackedColorArray(0.925782, 0.724963, 0.292355, 1, 0.8116, 0.40545, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ejifn"]
+gradient = SubResource("Gradient_fygn1")
+
+[sub_resource type="CurveTexture" id="CurveTexture_j1c88"]
+
+[sub_resource type="Curve" id="Curve_n582v"]
+min_value = -2.0
+max_value = 2.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_8e53m"]
+curve = SubResource("Curve_n582v")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g2nqj"]
+lifetime_randomness = 0.72
+angular_velocity_min = 11.7
+angular_velocity_max = 11.9
+orbit_velocity_min = 4.16334e-17
+orbit_velocity_max = 4.16334e-17
+orbit_velocity_curve = SubResource("CurveTexture_8e53m")
+radial_velocity_min = 2.0
+radial_velocity_max = 2.0
+scale_min = 0.0
+scale_max = 4.0
+color_ramp = SubResource("GradientTexture1D_ejifn")
+alpha_curve = SubResource("CurveTexture_kushy")
+emission_curve = SubResource("CurveTexture_j1c88")
+anim_speed_min = 0.2
+anim_speed_max = 1.36
+anim_speed_curve = SubResource("CurveTexture_pfycl")
+anim_offset_min = 0.0403
+anim_offset_max = 0.0403
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68rst"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_yahw1")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 8
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_w0bnc"]
+material = SubResource("StandardMaterial3D_68rst")
+uv2_padding = 1.7
+size = Vector2(8, 8)
+
 [node name="vehicle_1" type="RigidBody3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.85, 2.96469e-16, -1.28346e-07, 2.96469e-16, 0.85, -2.96469e-16, 1.28346e-07, -2.96469e-16, -0.85, 2.08165e-12, 2.08165e-12, 1.61596)
+transform = Transform3D(-0.95, 3.31347e-16, -1.43446e-07, 3.31348e-16, 0.95, -3.31348e-16, 1.43446e-07, -3.31348e-16, -0.95, 2.08165e-12, 2.08165e-12, 1.61596)
 mesh = ExtResource("1_0xc5l")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_b8d5v")
@@ -46,7 +111,7 @@ surface_material_override/4 = SubResource("StandardMaterial3D_e50k0")
 surface_material_override/5 = SubResource("StandardMaterial3D_0mcxv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(2.6, 0, 0, 0, 1.5, 0, 0, 0, 7.499, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+transform = Transform3D(2.9, 0, 0, 0, 1.673, 0, 0, 0, 8.364, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_4jwbe")
 
 [node name="Audio" type="Node3D" parent="."]
@@ -63,3 +128,11 @@ max_distance = 700.0
 [node name="CrashSound" type="AudioStreamPlayer3D" parent="Audio"]
 stream = ExtResource("4_fwno1")
 unit_size = 100.0
+
+[node name="Smoke" type="GPUParticles3D" parent="."]
+transform = Transform3D(2.9, 0, 0, 0, 1.673, 0, 0, 0, 8.364, -0.0431423, -0.0746793, 3.75516)
+visible = false
+emitting = false
+amount = 200
+process_material = SubResource("ParticleProcessMaterial_g2nqj")
+draw_pass_1 = SubResource("QuadMesh_w0bnc")
