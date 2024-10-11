@@ -4,8 +4,8 @@ extends "res://Scripts/BaseCharacter.gd"
 @export var roll_smoothness: float = 3
 
 @export var radius_offset = 4.0 # How many units to decrease the radius the AI uses to reach next gate, aka aim closer to the cneter
-@export var min_target_error = 0.0
-@export var max_target_error = 4.0
+@export var min_target_error: float = 0.0
+@export var max_target_error: float = 4.0
 
 @export var min_boost_probability = 0.0032 # How likely AI will boost at first place any frame
 @export var max_boost_probability = 0.1 # How likely AI will boost at last place any frame
@@ -80,7 +80,7 @@ func _input(event):
 
 func _physics_process(delta):
 	super(delta)
-	if race_manager.race_started:
+	if level_manager.race_started:
 		determine_knockdown(delta)
 		determine_boost(delta)
 		
@@ -117,30 +117,31 @@ func get_input_rotation() -> Vector3:
 	return pivot.global_rotation
 
 func determine_knockdown(delta):
-	var target_player = null
-	var index = -1
-		
-	for i in range(characters.size()):
-		if characters[i] == self:
-			index = i
-			break
+	if level_manager.knockdowns:
+		var target_player = null
+		var index = -1
 			
-	if index > 0:
-		target_player = race_manager.characters[index - 1]
-	
-	if target_player:
-		if global_transform.origin.distance_to(target_player.global_transform.origin) <= knockdown_distance:
-			if randf() <= knockdown_chance and not knocking_down and not target_player.current_forcefield_time > 0:
-				knocking_down = true
-				current_knockdown_try_time = knockdown_try_time
-			if knocking_down:
-				current_knockdown_try_time -= delta
-				if current_knockdown_try_time <= 0:
-					knocking_down = false
+		for i in range(characters.size()):
+			if characters[i] == self:
+				index = i
+				break
+				
+		if index > 0:
+			target_player = level_manager.characters[index - 1]
+		
+		if target_player:
+			if global_transform.origin.distance_to(target_player.global_transform.origin) <= knockdown_distance:
+				if randf() <= knockdown_chance and not knocking_down and not target_player.current_forcefield_time > 0:
+					knocking_down = true
+					current_knockdown_try_time = knockdown_try_time
+				if knocking_down:
+					current_knockdown_try_time -= delta
+					if current_knockdown_try_time <= 0:
+						knocking_down = false
+			else:
+				knocking_down = false
 		else:
 			knocking_down = false
-	else:
-		knocking_down = false
 	
 func predict_future_position(time_ahead: float) -> Vector3:
 	var current_velocity = linear_velocity
@@ -173,7 +174,7 @@ func calculate_target_position(gate) -> Vector3:
 					break
 					
 			if index > 0:
-				target_player = race_manager.characters[index - 1]
+				target_player = level_manager.characters[index - 1]
 			if target_player:
 				return target_player.global_transform.origin
 					

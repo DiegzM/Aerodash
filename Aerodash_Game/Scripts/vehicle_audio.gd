@@ -2,7 +2,7 @@ extends Node3D
 
 @onready var stream = $AudioStreamPlayer3D
 @onready var crash_sound = $CrashSound
-@onready var fake_crash_sound = $FakeCrashSound
+@onready var meme_crash_sound = $MemeCrashSound
 
 @export var min_pitch = 0.25
 @export var pitch_sensitivity = 0.006
@@ -16,26 +16,14 @@ var lerp_factor = 0.03
 
 var crash_sound_played = false
 
-var random_fake_crash_sounds = [
-	"res://Audio/crash_1.mp3",
-	"res://Audio/crash_2.mp3",
-	"res://Audio/crash_3.mp3",
-	"res://Audio/crash_4.mp3",
-	"res://Audio/crash_5.mp3",
-	"res://Audio/crash_6.mp3",
-	"res://Audio/crash_7.mp3",
-	"res://Audio/crash_8.mp3",
-	"res://Audio/crash_9.mp3",
-	"res://Audio/crash_10.mp3",
-	"res://Audio/crash_11.mp3",
-	"res://Audio/crash_12.mp3",
-	"res://Audio/crash_13.mp3",
-	"res://Audio/crash_14.mp3",
-	"res://Audio/crash_15.mp3"
-]
+var meme_crash_sounds = DirAccess.get_files_at("res://Assets/Audio/MemeCrashSounds")
+
+var level_manager = null
 
 func _ready():
 	stream.pitch_scale = min_pitch
+	if get_tree().current_scene is Level:
+		level_manager = get_tree().current_scene
 
 func _physics_process(delta):
 	if body:
@@ -47,11 +35,9 @@ func _physics_process(delta):
 		if body is BaseCharacter:
 			if body.dead:
 				target_pitch = min_pitch
-				play_crash_sound()
+				play_crash_sound(true)
 			else:
-				crash_sound_played = false
-				crash_sound.playing = false
-				fake_crash_sound.playing = false
+				play_crash_sound(false)
 				target_pitch = min_pitch + (speed * pitch_sensitivity)
 		
 		# Use lerp to smoothly transition from current_pitch to target_pitch
@@ -60,20 +46,31 @@ func _physics_process(delta):
 		# Apply the smoothly changing pitch to the stream
 		stream.pitch_scale = current_pitch
 
-func play_crash_sound():
-	if not crash_sound_played:
-		crash_sound.playing = true
-		choose_random_fake_crash_sound()
-		fake_crash_sound.playing = true
-		crash_sound_played = true
+func play_crash_sound(state):
+	if state:
+		if not crash_sound_played:
+			crash_sound.playing = true
+			if level_manager and level_manager.meme_sounds:
+				random_meme_crash_sound()
+				meme_crash_sound.playing = true
+			crash_sound_played = true
+	else:
+		crash_sound.playing = false
+		if level_manager and level_manager.meme_sounds:
+			meme_crash_sound.playing = false
+		crash_sound_played = false
 
-func choose_random_fake_crash_sound():
-	if random_fake_crash_sounds.size() > 0:
-		randomize()  # Randomize the seed
-		var random_index = randi() % random_fake_crash_sounds.size()  # Get random index
-		var selected_audio = load(random_fake_crash_sounds[random_index])  # Use load() instead of preload()
-		
-		if selected_audio:
-			fake_crash_sound.stream = selected_audio
+func random_meme_crash_sound():
+	
+	var valid_files = []
+	for file in meme_crash_sounds:
+		if file.ends_with(".mp3") or file.ends_with(".wav") or file.ends_with(".ogg"):
+			valid_files.append(file)
+			
+	if valid_files.size() > 0:
+		var random_file = valid_files[randi() % valid_files.size()]
+		var resource = load("res://Assets/Audio/MemeCrashSounds/" + random_file)
+		if resource:
+			meme_crash_sound.stream = resource
 		else:
-			print("Error: Could not load the selected vehicle scene.")
+			print("Error: Could not load the selected audio.")

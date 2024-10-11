@@ -19,8 +19,8 @@ extends Node3D
 @onready var knocking_down = false
 @onready var camera = $Camera
 @onready var player = get_parent().get_node("Player")
-@onready var race_manager = get_tree().current_scene.get_node("RaceManager")
-@onready var characters = race_manager.characters
+@onready var level_manager = get_tree().current_scene
+@onready var characters = level_manager.characters
 @onready var speed = 0.0
 @onready var in_game = true
 @onready var mouse_delta = Vector2.ZERO
@@ -89,7 +89,7 @@ func apply_fov(delta):
 	camera.fov = lerp(camera.fov, target_fov, fov_smoothness * delta)
 
 func apply_rotation(delta):
-	if race_manager.race_started:
+	if level_manager.race_started:
 		var pitch_delta = deg_to_rad(-mouse_delta.y * mouse_sensitivity)
 		var yaw_delta = deg_to_rad(-mouse_delta.x * mouse_sensitivity)
 

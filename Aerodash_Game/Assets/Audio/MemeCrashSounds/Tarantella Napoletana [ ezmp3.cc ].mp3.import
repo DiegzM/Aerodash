@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://wign5enqa203"
+path="res://.godot/imported/Tarantella Napoletana [ ezmp3.cc ].mp3-4188227e84d6b58792a040e21288140e.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Tarantella Napoletana [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Tarantella Napoletana [ ezmp3.cc ].mp3-4188227e84d6b58792a040e21288140e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

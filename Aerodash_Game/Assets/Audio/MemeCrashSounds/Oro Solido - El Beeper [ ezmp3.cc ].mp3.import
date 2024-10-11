@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bo3m0kaef5t1w"
+path="res://.godot/imported/Oro Solido - El Beeper [ ezmp3.cc ].mp3-44863ebf42c17763fa9472598604f890.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Oro Solido - El Beeper [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Oro Solido - El Beeper [ ezmp3.cc ].mp3-44863ebf42c17763fa9472598604f890.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

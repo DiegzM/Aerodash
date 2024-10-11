@@ -3,8 +3,7 @@ extends RigidBody3D
 
 ########## SETTINGS ##############
 # SPEEDS
-const ACCELERATION = Vector3(300, 300, 300) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
-const BOOST_ACCELERATION = Vector3(500, 500, 500)
+const ACCELERATION = Vector3(400, 400, 400) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
 const MIN_BOOST_SPEED = Vector3(110, 110, 110) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
 const MAX_BOOST_SPEED = Vector3(160, 160, 160)
@@ -25,7 +24,7 @@ const COLLISION_DIFFERENCE = 3 # If the collision global speed difference is wit
 const KNOCKDOWN_STREAK_TIME = 4 # Maximum much time between knockdowns to count as a streak
 
 # DEATH
-const RESPAWN_TIME = 1.5 # How long to wait if killed
+const RESPAWN_TIME = 2.0 # How long to wait if killed
 const FORCEFIELD_TIME = 4.0 # How long to be protected after respawning
 
 # ROTATION SMOOTHNESS
@@ -39,6 +38,7 @@ var current_boost_time = MAX_BOOST_TIME
 var current_boost_speed = MIN_BOOST_SPEED
 
 var current_acceleration = ACCELERATION
+var current_boost_acceleration = Vector3.ZERO
 var current_boost_recharge_speed = MIN_BOOST_RECHARGE_SPEED
 
 var track = null
@@ -58,7 +58,7 @@ var knockdown = false
 var knockdown_streak = 0
 var current_knockdown_streak_time = 0
 
-var race_manager = null
+var level_manager = null
 var characters = null
 var race_finished = false
 
@@ -70,8 +70,8 @@ var target_velocity = Vector3.ZERO
 func _ready():
 	set_contact_monitor(true)
 	max_contacts_reported = 10
-	race_manager = get_tree().current_scene.get_node("RaceManager")
-	characters = race_manager.characters
+	level_manager = get_tree().current_scene
+	characters = level_manager.characters
 	track = get_tree().current_scene.get_node("Track")
 	if track:
 		for i in range(track.get_child_count()):
@@ -89,20 +89,21 @@ func _ready():
 
 func _physics_process(delta):
 	knockdown = false
-	if (race_manager.race_started and not race_finished):
+	if (level_manager.race_started and not race_finished):
 		boost(delta)
 		forcefield_time(delta)
 		smoke(delta)
 		if not dead:
-			handle_collisions()
-			knockdown_time(delta)
+			if level_manager.knockdowns:
+				handle_collisions()
+				knockdown_time(delta)
 	if dead:
 		respawn(delta)
 		death_movement()
 	
 func _integrate_forces(state):
 	set_sleeping(false)
-	if (race_manager.race_started and not race_finished and not dead):
+	if (level_manager.race_started and not race_finished and not dead):
 		apply_rotation(state)
 		apply_movement(state)
 	
@@ -115,7 +116,7 @@ func apply_movement(state):
 	
 	if boosting:
 		current_max_speed = current_boost_speed.length()
-		current_acceleration = BOOST_ACCELERATION
+		current_acceleration = current_boost_acceleration
 		
 	var local_force = Vector3(
 		input_vector.x * current_acceleration.x,
@@ -213,7 +214,14 @@ func boost(delta):
 	
 	if player_index != -1:
 		var position_factor = float(player_index) / float(characters.size() - 1)  # Relative position from 0 (first place) to 1 (last place)
-		current_boost_speed = lerp(MIN_BOOST_SPEED, MAX_BOOST_SPEED, position_factor)
+		if level_manager.knockdowns:
+			current_boost_speed = lerp(MIN_BOOST_SPEED, MAX_BOOST_SPEED, position_factor)
+		else:
+			current_boost_speed = lerp(MIN_BOOST_SPEED, MAX_BOOST_SPEED, 0.5)
+		
+		var boost_acceleration_multiplier = current_boost_speed.length() / MAX_SPEED.length()
+		
+		current_boost_acceleration = ACCELERATION * boost_acceleration_multiplier
 	else:
 		current_boost_speed = MIN_BOOST_SPEED
 		
@@ -228,7 +236,10 @@ func boost(delta):
 		if current_boost_time <= MAX_BOOST_TIME:
 			
 			var position_factor = float(player_index) / float(characters.size() - 1)  
-			current_boost_recharge_speed = lerp(MIN_BOOST_RECHARGE_SPEED, MAX_BOOST_RECHARGE_SPEED, position_factor)
+			if level_manager.knockdowns:
+				current_boost_recharge_speed = lerp(MIN_BOOST_RECHARGE_SPEED, MAX_BOOST_RECHARGE_SPEED, position_factor)
+			else:
+				current_boost_recharge_speed = lerp(MIN_BOOST_RECHARGE_SPEED, MAX_BOOST_RECHARGE_SPEED, 0.5)
 			current_boost_time += current_boost_recharge_speed * delta
 	
 func get_next_gate(section_index) -> Node3D:
@@ -270,7 +281,7 @@ func on_section_passed(gate: Node3D):
 			
 		next_gate = get_next_gate(current_section_index)
 		
-		if lap > race_manager.laps:
+		if lap > level_manager.laps:
 			race_finished = true
 
 func handle_collisions():

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bp85odj5l2gl1"
+path="res://.godot/imported/birmingham england sucks 🖕🖕🏻🚽🤮🤮🤮🤮🤮❌❌❌🚫 [ ezmp3.cc ].mp3-1afdd6ffc69ae9c5d1314e1dd21f7683.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/birmingham england sucks 🖕🖕🏻🚽🤮🤮🤮🤮🤮❌❌❌🚫 [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/birmingham england sucks 🖕🖕🏻🚽🤮🤮🤮🤮🤮❌❌❌🚫 [ ezmp3.cc ].mp3-1afdd6ffc69ae9c5d1314e1dd21f7683.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

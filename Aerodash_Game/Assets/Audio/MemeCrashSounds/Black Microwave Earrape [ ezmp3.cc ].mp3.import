@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dcq2adq87llkg"
+path="res://.godot/imported/Black Microwave Earrape [ ezmp3.cc ].mp3-1ae6fbed5145ae37d8a709b09f9cea02.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Black Microwave Earrape [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Black Microwave Earrape [ ezmp3.cc ].mp3-1ae6fbed5145ae37d8a709b09f9cea02.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

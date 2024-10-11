@@ -77,7 +77,7 @@ func _physics_process(delta):
 		
 	var target_roll_speed = 0.0
 
-	if race_manager.race_started and not debug:
+	if level_manager.race_started and not debug:
 		if Input.is_action_pressed("roll_left"):
 			target_roll_speed = ROLL_SPEED
 		elif Input.is_action_pressed("roll_right"):

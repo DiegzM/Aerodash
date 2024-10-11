@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dt2fh3onkbi4f"
+path="res://.godot/imported/Oh Yeah Mr Krabs Scream Sound Effect [ ezmp3.cc ].mp3-15764dbe3c65176ee8cf2a03f912de67.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Oh Yeah Mr Krabs Scream Sound Effect [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Oh Yeah Mr Krabs Scream Sound Effect [ ezmp3.cc ].mp3-15764dbe3c65176ee8cf2a03f912de67.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

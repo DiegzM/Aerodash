@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bsocmo6irflc3"
+path="res://.godot/imported/Hechizeros Band - El Sonidito [ ezmp3.cc ].mp3-a3f153e5ba72b46008118097e78547b7.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Hechizeros Band - El Sonidito [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Hechizeros Band - El Sonidito [ ezmp3.cc ].mp3-a3f153e5ba72b46008118097e78547b7.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

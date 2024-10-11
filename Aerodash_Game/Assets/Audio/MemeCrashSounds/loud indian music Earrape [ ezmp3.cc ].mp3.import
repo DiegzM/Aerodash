@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://gsqmf3ib2idd"
+path="res://.godot/imported/loud indian music Earrape [ ezmp3.cc ].mp3-991533ea3bb93ebf0262fb0ebf31dac7.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/loud indian music Earrape [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/loud indian music Earrape [ ezmp3.cc ].mp3-991533ea3bb93ebf0262fb0ebf31dac7.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

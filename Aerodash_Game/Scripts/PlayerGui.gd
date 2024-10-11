@@ -1,6 +1,6 @@
 extends Control
 
-@onready var race_manager = get_tree().current_scene.get_node("RaceManager")
+@onready var level_manager = get_tree().current_scene
 @onready var player = get_parent().get_node("Player")
 
 var place = 0
@@ -43,8 +43,8 @@ func _process(delta):
 		update_respawn_countdown(delta)
 
 func update_text(delta):
-	place = race_manager.get_place(player)
-	racer_count = race_manager.get_racer_count()
+	place = level_manager.get_place(player)
+	racer_count = level_manager.get_racer_count()
 	$PlaceGui/Place.text = str(place)
 	$PlaceGui/PlaceRacerCount.text = str(racer_count)
 	$LapGui/LapCount.text = str(player.lap)
@@ -54,7 +54,7 @@ func update_text(delta):
 func update_leaderboard(delta):
 	var leaderboard_gui = $LeaderboardGui
 	var leaderboard = leaderboard_gui.get_node("VBoxContainer")
-	var characters = race_manager.get_characters()
+	var characters = level_manager.get_characters()
 	
 	for i in range(characters.size()):
 		if i >= leaderboard.get_child_count():
@@ -96,9 +96,9 @@ func update_stopwatch(delta):
 	$StopwatchGui/Stopwatch.text = time_text
 
 func update_countdown(delta):
-	var timer = race_manager.countdown_timer
+	var timer = level_manager.countdown_timer
 
-	if race_manager.race_started:
+	if level_manager.race_started:
 		update_center_text("", delta)
 		race_started = true
 	else:

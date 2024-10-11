@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cebi7v5ns6ryi"
+path="res://.godot/imported/ishowspeed screaming loud Sound Effect [ ezmp3.cc ].mp3-ca5c2bee2fefef0ab373bb3d17de690e.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/ishowspeed screaming loud Sound Effect [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/ishowspeed screaming loud Sound Effect [ ezmp3.cc ].mp3-ca5c2bee2fefef0ab373bb3d17de690e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

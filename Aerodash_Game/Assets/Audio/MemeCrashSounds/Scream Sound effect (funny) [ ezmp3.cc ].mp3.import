@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://k6j8lgw7hfak"
+path="res://.godot/imported/Scream Sound effect (funny) [ ezmp3.cc ].mp3-f3d5b19f5c4ea6195e2f743b2dc91e1f.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Scream Sound effect (funny) [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Scream Sound effect (funny) [ ezmp3.cc ].mp3-f3d5b19f5c4ea6195e2f743b2dc91e1f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://8ftj370w2ckd"
+path="res://.godot/imported/Ralph Breaks The Internet_ Wreck-It Ralph 2 Official Teaser Trailer [ ezmp3.cc ].mp3-3a1a1e4109e1a01f912d02de518a7c17.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Ralph Breaks The Internet_ Wreck-It Ralph 2 Official Teaser Trailer [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Ralph Breaks The Internet_ Wreck-It Ralph 2 Official Teaser Trailer [ ezmp3.cc ].mp3-3a1a1e4109e1a01f912d02de518a7c17.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

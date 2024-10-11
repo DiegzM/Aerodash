@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bhr24j4nrec7"
+path="res://.godot/imported/Classic French Meme Song - Sound Effect for editing [ ezmp3.cc ].mp3-47555cfd2bdf37dd9b4e9fc1d2134dbd.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Classic French Meme Song - Sound Effect for editing [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Classic French Meme Song - Sound Effect for editing [ ezmp3.cc ].mp3-47555cfd2bdf37dd9b4e9fc1d2134dbd.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

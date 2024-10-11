@@ -2,9 +2,9 @@
 
 [ext_resource type="ArrayMesh" uid="uid://bagm26hxe8lbu" path="res://Assets/Vehicles/vehicle_1.obj" id="1_0xc5l"]
 [ext_resource type="Script" path="res://Scripts/vehicle_audio.gd" id="1_cakxh"]
-[ext_resource type="AudioStream" uid="uid://cy5hqw3tigglc" path="res://Audio/vehicle_1_loop.mp3" id="2_1p6oh"]
+[ext_resource type="AudioStream" uid="uid://cy5hqw3tigglc" path="res://Assets/Audio/vehicle_1_loop.mp3" id="2_1p6oh"]
 [ext_resource type="Texture2D" uid="uid://2mus2o3hh607" path="res://Assets/Effects/smoke.webp" id="2_yahw1"]
-[ext_resource type="AudioStream" uid="uid://c04ql44xtj1uc" path="res://Audio/crash_1.mp3" id="4_fwno1"]
+[ext_resource type="AudioStream" uid="uid://c04ql44xtj1uc" path="res://Assets/Audio/crash_1.mp3" id="4_fwno1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b8d5v"]
 
@@ -130,7 +130,7 @@ stream = ExtResource("4_fwno1")
 volume_db = -5.0
 unit_size = 100.0
 
-[node name="FakeCrashSound" type="AudioStreamPlayer3D" parent="Audio"]
+[node name="MemeCrashSound" type="AudioStreamPlayer3D" parent="Audio"]
 stream = ExtResource("4_fwno1")
 volume_db = 5.0
 unit_size = 100.0

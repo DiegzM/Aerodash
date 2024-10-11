@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c5k8obbhnekwj"
+path="res://.godot/imported/Bizarre Irish Anti-Speeding PSA [ ezmp3.cc ].mp3-2fb511283d32c1e8c6c0301a4c69da39.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Bizarre Irish Anti-Speeding PSA [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Bizarre Irish Anti-Speeding PSA [ ezmp3.cc ].mp3-2fb511283d32c1e8c6c0301a4c69da39.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
