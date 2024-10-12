@@ -23,6 +23,7 @@ extends Node3D
 @onready var characters = level_manager.characters
 @onready var speed = 0.0
 @onready var in_game = true
+@onready var controls_disabled = false
 @onready var mouse_delta = Vector2.ZERO
 @onready var previous_position = global_transform.origin
 @onready var previous_camera_position = camera.transform.origin
@@ -40,17 +41,20 @@ func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		toggle_mouse_mode()
 	
-	if event is InputEventMouseMotion and in_game:
+	if event is InputEventMouseMotion and in_game and not controls_disabled:
 		mouse_delta = event.relative
 
 # Toggle mouse mode between captured (for gameplay) and visible (for menus)
 func toggle_mouse_mode():
-	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		in_game = false
+	if not controls_disabled:
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			in_game = false
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			in_game = true
 	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		in_game = true
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		
 func _physics_process(delta):
 	if get_tree().current_scene.has_node("DebugCamera"):
@@ -79,6 +83,8 @@ func _physics_process(delta):
 		else:
 			camera.look_at(player.global_transform.origin)
 			apply_collision_camera_shake(delta)
+		if controls_disabled:
+			toggle_mouse_mode()
 		
 func apply_fov(delta):
 	var current_position = global_transform.origin

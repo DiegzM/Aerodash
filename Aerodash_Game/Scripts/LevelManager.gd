@@ -9,14 +9,20 @@ extends Node3D
 @onready var knockdowns = Global.knockdowns
 @onready var meme_sounds = Global.meme_sounds
 
+@onready var fade = $Fade
+@onready var main_menu_dir = "res://Levels/Main.tscn"
+
 ######################################################################################
 
 var race_started = false
 
 var characters: Array = []
+var final_leaderboard: Array = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	find_characters(get_parent())
+	fade.visible = true
+	fade.get_node("AnimationPlayer").play("fade_in")
 	if not knockdowns:
 		meme_sounds = false
 	pass
@@ -41,6 +47,9 @@ func update_countdown_timer(delta):
 		
 func update_places(delta):
 	characters.sort_custom(compare_positions)
+	for character in characters:
+		if character.race_finished and character not in final_leaderboard:
+			final_leaderboard.append(character)
 
 func compare_positions(a, b):
 	# Sort by lap
@@ -84,3 +93,11 @@ func get_racer_count():
 	
 func get_characters():
 	return characters
+
+func fade_out():
+	$Fade.get_node("AnimationPlayer").play("fade_out")
+	
+func _on_animation_player_animation_finished(anim_name):
+	if anim_name == "fade_out":
+		get_tree().change_scene_to_packed(load(main_menu_dir))
+		

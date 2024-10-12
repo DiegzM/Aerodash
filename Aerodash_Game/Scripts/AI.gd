@@ -22,6 +22,9 @@ extends "res://Scripts/BaseCharacter.gd"
 
 @onready var current_roll_speed: float = 0
 
+static var random_names = Global.random_names
+
+var name_selected = false
 var current_boost_probability = 0
 var current_boost_timeout = 0
 var current_target_position = Vector3.ZERO
@@ -61,6 +64,24 @@ func _ready():
 	if $CollisionShape3D:
 		collision_box = $CollisionShape3D
 
+func select_random_name():
+	var random_name = ""
+	var attempts = 0
+	
+	while true:
+		random_name = Global.random_names[randi() % Global.random_names.size()]
+		var name_taken = false
+		for character in characters:
+			if character.name == random_name:
+				name_taken = true
+				break
+
+		if not name_taken or attempts >= Global.random_names.size():
+			break
+		attempts += 1
+	
+	name = random_name
+	
 func select_random_vehicle():
 
 	if vehicles_scenes.size() > 0:
@@ -73,13 +94,17 @@ func select_random_vehicle():
 			add_child(vehicle_instance)  # Add it to the scene tree
 		else:
 			print("Error: Could not load the selected vehicle scene.")
-			
+		
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):
 	pass
 
 func _physics_process(delta):
 	super(delta)
+	if not name_selected and characters != []:
+		name_selected = true
+		select_random_name()
+		
 	if level_manager.race_started:
 		determine_knockdown(delta)
 		determine_boost(delta)

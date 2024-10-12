@@ -49,7 +49,11 @@ var current_gate = null
 var track_sections: Array = []
 var next_gate = null
 
+var final_place = -1
+
 var lap = 1
+
+var elapsed_time = 0.0
 
 var current_respawn_time = RESPAWN_TIME
 var current_forcefield_time = 0
@@ -57,12 +61,16 @@ var dead = false
 var knockdown = false
 var knockdown_streak = 0
 var current_knockdown_streak_time = 0
+var total_knockdowns = 0
+var total_deaths = 0
 
 var level_manager = null
 var characters = null
 var race_finished = false
 
 var collision_box = null
+
+var collided_with = ""
 
 var target_velocity = Vector3.ZERO
 
@@ -86,10 +94,11 @@ func _ready():
 			var boundary = current_section.get_node("SectionBoundary")
 			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
 				boundary.body_exited.connect(_on_section_boundary_exited)
-
+	
 func _physics_process(delta):
 	knockdown = false
 	if (level_manager.race_started and not race_finished):
+		elapsed_time += delta
 		boost(delta)
 		forcefield_time(delta)
 		smoke(delta)
@@ -100,6 +109,9 @@ func _physics_process(delta):
 	if dead:
 		respawn(delta)
 		death_movement()
+	
+	if race_finished and final_place == -1:
+		final_place = level_manager.final_leaderboard.find(self)
 	
 func _integrate_forces(state):
 	set_sleeping(false)
@@ -291,19 +303,25 @@ func handle_collisions():
 		if body and body is BaseCharacter:
 			var relative_velocity = (linear_velocity - body.linear_velocity).length()
 			if relative_velocity >= COLLISION_SPEED:
+				collided_with = body.name
 				if linear_velocity.length() > body.linear_velocity.length() + COLLISION_DIFFERENCE:
 					if body.current_forcefield_time <= 0:
 						knockdown = true
+						total_knockdowns += 1
 						body.dead = true
 				elif linear_velocity.length() < body.linear_velocity.length() - COLLISION_DIFFERENCE:
 					if current_forcefield_time <= 0:
+						total_deaths += 1
 						dead = true
 				else:
 					if current_forcefield_time <= 0:
+						total_deaths += 1
 						dead = true
 					if body.current_forcefield_time <= 0:
 						knockdown = true
 						body.dead = true
+						total_knockdowns += 1
+						
 			
 func _on_section_boundary_exited(body):
 	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter

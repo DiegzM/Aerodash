@@ -67,7 +67,6 @@ func _input(event):
 
 func _physics_process(delta):
 	super(delta)
-	
 	if get_tree().current_scene.has_node("DebugCamera"):
 		var debug_camera = get_tree().current_scene.get_node("DebugCamera")
 		if debug_camera.debug:

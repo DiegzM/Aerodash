@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ce77ymyq0x7rv"
+path="res://.godot/imported/Neiman Earns His Part _ Whiplash (2014) _ 1080p HD [ ezmp3.cc ].mp3-0602c77d81fb6ccbdb1e2ca0927fc783.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/MemeCrashSounds/Neiman Earns His Part _ Whiplash (2014) _ 1080p HD [ ezmp3.cc ].mp3"
+dest_files=["res://.godot/imported/Neiman Earns His Part _ Whiplash (2014) _ 1080p HD [ ezmp3.cc ].mp3-0602c77d81fb6ccbdb1e2ca0927fc783.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
