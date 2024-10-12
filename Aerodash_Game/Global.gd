@@ -14,15 +14,18 @@ var random_names = ["ksiisdaddy69420", "IAMINYOURWALLS", "ILikeMyCheeseDrippyBru
  "bingus_fungus", "sparkle_juice_69", "thiccums_snorlax", "ultrasoggytater", "GucciFlipFlopGoblin", "skrrtMcFlurry", "bacon_slapper9000", "doorknob_enthusiast", "yodaluvinlunchable",
  "superslimeydonkey", "crumbcollector", "SnaccDaddy69", "pickle_dreamer", "GhostlyNachos", "superweirdlyradish", "crab_dancer_3000", "jalapeno_fingerz", "weirdpickle_lol", "ThanosMomFanClub",
  "ketchup_hoarder", "frogsnugglez", "butteredsnake_queen", "yikes_bro", "DrSpicyPickle", "frosty_narwhal69", "SharkFinSoupDude", "potato_rebel", "nobodylikes_spam", "CaptainEggyMcCrust",
- "shrimpybananaman", "thicckittennipples", "daddybeanjuice", "scarysoapbubble", "dolphin_screamer", "juicebox_bandit", "toothpastefarts", "glitchy_sushi", "zesty_raincloud", "firehydrantwizard",
+ "shrimpybananaman", "pomni_addict_9232", "daddybeanjuice", "scarysoapbubble", "dolphin_screamer", "juicebox_bandit", "toothpastefarts", "glitchy_sushi", "zesty_raincloud", "firehydrantwizard",
  "mrpeanutbutterpants", "hungry_turtlebro", "spicywafflelord", "nuggetsofrage", "farting_polarbear", "spicy_pickleboy", "mega_saucemonster", "crayonlicker2000", "scrambledmozzarella", "LumpyPotatoLady",
  "TheJellyBellyGang", "wigglewormboi", "legendary_spork", "toasterking", "awkward_fishstick", "FunkyZucchini44", "snugglemuncher", "soggy_banana69", "zappykangaroo", "glittery_cowboy", "drippingtoaster",
- "kingofstrudelz", "CerealBeef", "dustynachos", "flamingtoenails", "pebblesandspit", "giggleswithnoodles", "scrungydonut", "TaterTotMessiah", "cabbage_ninja", "nuggetbreather101", "EatinLunchlyWatchinTalkTuah"]
+ "kingofstrudelz", "CerealBeef", "dustynachos", "flamingtoenails", "pebblesandspit", "giggleswithnoodles", "scrungydonut", "TaterTotMessiah", "cabbage_ninja", "nuggetbreather101", "EatinLunchlyWatchinTalkTuah",
+"OilyHippopotamus1000", "SpringfieldCatsAndDogs2024"]
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-
+func _input(event):
+	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+

@@ -17,7 +17,11 @@ extends Node3D
 @onready var meme_sounds = meme_sounds_button.button_pressed
 @onready var disabled_color = Color(125,125,125)
 
+@onready var settings = $Settings
+
 @onready var maps = DirAccess.get_files_at("res://Levels/Maps")
+
+@onready var go_to = ""
 
 @onready var game_start = false
 
@@ -26,6 +30,7 @@ var current_gui = null
 var next_gui = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	fade.visible = true
 	fade.get_node("AnimationPlayer").play("fade_in")
 	title_screen.visible = true
@@ -76,6 +81,8 @@ func _on_animation_player_animation_finished(anim_name):
 			Global.knockdowns = knockdowns
 			Global.meme_sounds = meme_sounds
 			get_tree().change_scene_to_packed(selected_map)
+	elif go_to == "exit":
+		get_tree().quit()
 			
 	else:
 		if anim_name == "fade_out":
@@ -113,3 +120,13 @@ func _on_meme_sounds_toggled(toggled_on):
 func _on_map_setup_start_pressed():
 	game_start = true
 	fade_out()
+
+
+func _on_title_screen_exit_pressed():
+	go_to = "exit"
+	fade_out()
+
+
+func _on_settings_button_pressed():
+	settings.get_node("BackButton").go_to_gui = current_gui
+	transition_to(settings)

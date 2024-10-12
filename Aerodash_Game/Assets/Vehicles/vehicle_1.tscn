@@ -1,10 +1,11 @@
-[gd_scene load_steps=24 format=3 uid="uid://b8pg7ea0ofwkc"]
+[gd_scene load_steps=25 format=3 uid="uid://b8pg7ea0ofwkc"]
 
 [ext_resource type="ArrayMesh" uid="uid://bagm26hxe8lbu" path="res://Assets/Vehicles/vehicle_1.obj" id="1_0xc5l"]
 [ext_resource type="Script" path="res://Scripts/vehicle_audio.gd" id="1_cakxh"]
 [ext_resource type="AudioStream" uid="uid://cy5hqw3tigglc" path="res://Assets/Audio/vehicle_1_loop.mp3" id="2_1p6oh"]
 [ext_resource type="Texture2D" uid="uid://2mus2o3hh607" path="res://Assets/Effects/smoke.webp" id="2_yahw1"]
 [ext_resource type="AudioStream" uid="uid://c04ql44xtj1uc" path="res://Assets/Audio/crash_1.mp3" id="4_fwno1"]
+[ext_resource type="FontFile" uid="uid://boywltg32uvvf" path="res://Assets/Fonts/Pildrone-LVAy4.otf" id="6_47bt6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b8d5v"]
 
@@ -142,3 +143,11 @@ emitting = false
 amount = 200
 process_material = SubResource("ParticleProcessMaterial_g2nqj")
 draw_pass_1 = SubResource("QuadMesh_w0bnc")
+
+[node name="NameLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000398755, 2.77034, -0.00279713)
+pixel_size = 0.03
+billboard = 1
+text = "
+"
+font = ExtResource("6_47bt6")

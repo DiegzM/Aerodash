@@ -5,11 +5,11 @@ extends RigidBody3D
 # SPEEDS
 const ACCELERATION = Vector3(400, 400, 400) # Vector3(forward_acceleration, upward_acceleration, side_acceleration)
 const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_speed, side_max_speed)
-const MIN_BOOST_SPEED = Vector3(110, 110, 110) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
-const MAX_BOOST_SPEED = Vector3(160, 160, 160)
+const MIN_BOOST_SPEED = Vector3(135, 135, 135) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
+const MAX_BOOST_SPEED = Vector3(135, 135, 135)
 const MAX_BOOST_TIME = 7
-const MIN_BOOST_RECHARGE_SPEED = 0.4 # Boost recharge speed at first place
-const MAX_BOOST_RECHARGE_SPEED = 2.4 # Boost recharge speed at last place
+const MIN_BOOST_RECHARGE_SPEED = 1.4 # Boost recharge speed at first place
+const MAX_BOOST_RECHARGE_SPEED = 4.4 # Boost recharge speed at last place
 const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
 const MAX_UPWARD_FACTOR = 0.9 # How many times to increase speed when facing vertically up
 const ROLL_SPEED = 4.0

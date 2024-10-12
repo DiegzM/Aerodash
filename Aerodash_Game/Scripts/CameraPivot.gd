@@ -37,24 +37,10 @@ func _ready():
 
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):
-	# Toggle between mouse captured and visible modes with ESC key
-	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		toggle_mouse_mode()
-	
 	if event is InputEventMouseMotion and in_game and not controls_disabled:
 		mouse_delta = event.relative
 
 # Toggle mouse mode between captured (for gameplay) and visible (for menus)
-func toggle_mouse_mode():
-	if not controls_disabled:
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			in_game = false
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-			in_game = true
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		
 func _physics_process(delta):
 	if get_tree().current_scene.has_node("DebugCamera"):
@@ -84,7 +70,7 @@ func _physics_process(delta):
 			camera.look_at(player.global_transform.origin)
 			apply_collision_camera_shake(delta)
 		if controls_disabled:
-			toggle_mouse_mode()
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		
 func apply_fov(delta):
 	var current_position = global_transform.origin

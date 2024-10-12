@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dsvmobt42asoq"]
+[gd_scene load_steps=21 format=3 uid="uid://dsvmobt42asoq"]
 
 [ext_resource type="Script" path="res://Levels/MainMenu.gd" id="1_rrrgt"]
 [ext_resource type="Texture2D" uid="uid://bke5efhmb8aam" path="res://Assets/Images/Screenshot 2024-10-09 at 3.22.57 PM.png" id="2_kkdtf"]
@@ -9,6 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://d26fbpygwaqcs" path="res://Assets/Images/back_button.png" id="5_4toby"]
 [ext_resource type="FontFile" uid="uid://boywltg32uvvf" path="res://Assets/Fonts/Pildrone-LVAy4.otf" id="5_7qpqa"]
 [ext_resource type="Script" path="res://Levels/BackButton.gd" id="6_7emaj"]
+[ext_resource type="Texture2D" uid="uid://b6yu1lgjg1ch3" path="res://Assets/Images/settings_icon.png" id="10_hoghh"]
+[ext_resource type="Script" path="res://Levels/SettingsButton.gd" id="11_ojjjt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l0bll"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -31,7 +33,7 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ldem"]
-bg_color = Color(1, 0.807843, 0.666667, 1)
+bg_color = Color(0.242966, 0.242966, 0.242966, 1)
 border_width_left = 8
 border_width_top = 8
 border_width_right = 8
@@ -43,7 +45,7 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prntg"]
-bg_color = Color(0.509804, 0.278431, 0, 1)
+bg_color = Color(0, 0, 0, 1)
 border_width_left = 8
 border_width_top = 8
 border_width_right = 8
@@ -53,6 +55,9 @@ corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3chrt"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 1)
 
 [sub_resource type="Animation" id="Animation_j5mxs"]
 resource_name = "fade_in"
@@ -100,6 +105,7 @@ stream = ExtResource("3_8ccnh")
 autoplay = true
 
 [node name="MapSetup" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -232,6 +238,95 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_1ldem")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_prntg")
 text = "START"
 
+[node name="SettingsButton" type="TextureButton" parent="MapSetup"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -201.0
+offset_top = 59.0
+offset_right = -74.0
+offset_bottom = 180.0
+grow_horizontal = 0
+texture_normal = ExtResource("10_hoghh")
+ignore_texture_size = true
+stretch_mode = 4
+script = ExtResource("11_ojjjt")
+
+[node name="Settings" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Settings"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -13.0
+offset_top = -7.0
+offset_right = 43.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_f7cji")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ControlsLabel" type="Label" parent="Settings"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -1278.5
+offset_right = 1278.5
+offset_bottom = 221.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_dbb0i")
+theme_override_font_sizes/font_size = 120
+text = "Controls"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="Settings"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -1288.0
+offset_top = 303.0
+offset_right = 1269.0
+offset_bottom = 524.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_7qpqa")
+theme_override_font_sizes/font_size = 70
+text = "MOVEMENT: W/A/S/D
+
+ROLL: Q/E
+
+PAN: Mouse Movement
+
+BOOST: Hold Left Click"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="TextureButton" parent="Settings" node_paths=PackedStringArray("go_to_gui")]
+offset_left = 39.0
+offset_top = 48.0
+offset_right = 166.0
+offset_bottom = 169.0
+texture_normal = ExtResource("5_4toby")
+ignore_texture_size = true
+stretch_mode = 4
+script = ExtResource("6_7emaj")
+go_to_gui = NodePath("../../SelectMap")
+
 [node name="SelectMap" type="Control" parent="."]
 visible = false
 layout_mode = 3
@@ -300,8 +395,22 @@ stretch_mode = 4
 script = ExtResource("6_7emaj")
 go_to_gui = NodePath("../../TitleScreen")
 
+[node name="SettingsButton" type="TextureButton" parent="SelectMap"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -201.0
+offset_top = 59.0
+offset_right = -74.0
+offset_bottom = 180.0
+grow_horizontal = 0
+texture_normal = ExtResource("10_hoghh")
+ignore_texture_size = true
+stretch_mode = 4
+script = ExtResource("11_ojjjt")
+
 [node name="TitleScreen" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -355,10 +464,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -491.0
-offset_top = -253.0
-offset_right = 486.0
-offset_bottom = -69.0
+offset_left = -1078.0
+offset_top = -277.0
+offset_right = -101.0
+offset_bottom = -74.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -368,6 +477,42 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ttkd4")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1ldem")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_prntg")
 text = "PLAY"
+
+[node name="TitleScreenExit" type="Button" parent="TitleScreen"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = -281.0
+offset_right = 1077.0
+offset_bottom = -78.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_7qpqa")
+theme_override_font_sizes/font_size = 150
+theme_override_styles/normal = SubResource("StyleBoxFlat_3chrt")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1ldem")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_prntg")
+text = "EXIT GAME"
+
+[node name="SettingsButton" type="TextureButton" parent="TitleScreen"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -201.0
+offset_top = 59.0
+offset_right = -74.0
+offset_bottom = 180.0
+grow_horizontal = 0
+texture_normal = ExtResource("10_hoghh")
+ignore_texture_size = true
+stretch_mode = 4
+script = ExtResource("11_ojjjt")
 
 [node name="Fade" type="CanvasLayer" parent="."]
 visible = false
@@ -393,11 +538,26 @@ libraries = {
 [connection signal="toggled" from="MapSetup/Knockdowns" to="." method="_on_knockdowns_toggled"]
 [connection signal="toggled" from="MapSetup/MemeSounds" to="." method="_on_meme_sounds_toggled"]
 [connection signal="pressed" from="MapSetup/MapSetupStart" to="." method="_on_map_setup_start_pressed"]
+[connection signal="mouse_entered" from="MapSetup/SettingsButton" to="MapSetup/SettingsButton" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="MapSetup/SettingsButton" to="MapSetup/SettingsButton" method="_on_mouse_exited"]
+[connection signal="pressed" from="MapSetup/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="back_pressed" from="Settings/BackButton" to="." method="_on_back_button_back_pressed"]
+[connection signal="mouse_entered" from="Settings/BackButton" to="Settings/BackButton" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Settings/BackButton" to="Settings/BackButton" method="_on_mouse_exited"]
+[connection signal="pressed" from="Settings/BackButton" to="Settings/BackButton" method="_on_pressed"]
 [connection signal="back_pressed" from="SelectMap/BackButton" to="." method="_on_back_button_back_pressed"]
 [connection signal="mouse_entered" from="SelectMap/BackButton" to="SelectMap/BackButton" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="SelectMap/BackButton" to="SelectMap/BackButton" method="_on_mouse_exited"]
 [connection signal="pressed" from="SelectMap/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="SelectMap/BackButton" to="SelectMap/BackButton" method="_on_pressed"]
+[connection signal="mouse_entered" from="SelectMap/SettingsButton" to="SelectMap/SettingsButton" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="SelectMap/SettingsButton" to="SelectMap/SettingsButton" method="_on_mouse_exited"]
+[connection signal="pressed" from="SelectMap/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="TitleScreen/TitleScreenPlay" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="TitleScreen/TitleScreenPlay" to="." method="_on_title_screen_play_pressed"]
+[connection signal="pressed" from="TitleScreen/TitleScreenExit" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="TitleScreen/TitleScreenExit" to="." method="_on_title_screen_exit_pressed"]
+[connection signal="mouse_entered" from="TitleScreen/SettingsButton" to="TitleScreen/SettingsButton" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="TitleScreen/SettingsButton" to="TitleScreen/SettingsButton" method="_on_mouse_exited"]
+[connection signal="pressed" from="TitleScreen/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="animation_finished" from="Fade/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

@@ -12,9 +12,13 @@ extends Node3D
 @onready var fade = $Fade
 @onready var main_menu_dir = "res://Levels/Main.tscn"
 
+@onready var pause_menu = $PauseMenu
+
 ######################################################################################
 
 var race_started = false
+
+var paused = false
 
 var characters: Array = []
 var final_leaderboard: Array = []
@@ -34,6 +38,11 @@ func find_characters(node: Node):
 	for child in node.get_children():
 		find_characters(child)
 		
+func _input(event):
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		paused = !paused
+		if paused:
+			$PauseMenu.toggle_pause()
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	update_places(delta)
@@ -93,11 +102,3 @@ func get_racer_count():
 	
 func get_characters():
 	return characters
-
-func fade_out():
-	$Fade.get_node("AnimationPlayer").play("fade_out")
-	
-func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "fade_out":
-		get_tree().change_scene_to_packed(load(main_menu_dir))
-		

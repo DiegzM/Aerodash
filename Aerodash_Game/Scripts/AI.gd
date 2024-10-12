@@ -9,7 +9,8 @@ extends "res://Scripts/BaseCharacter.gd"
 
 @export var min_boost_probability = 0.0032 # How likely AI will boost at first place any frame
 @export var max_boost_probability = 0.1 # How likely AI will boost at last place any frame
-@export var boost_cutoff_probability = 0.003 # How likely AI will stop boosting at any frame
+@export var min_boost_cutoff_probability = 0.003 # How likely AI will stop boosting at any frame
+@export var max_boost_cutoff_probability = 0.0002 # How likely AI will stop boosting at any frame
 @export var min_boost_timeout = 2 # Minimum how long to wait before boosting again, after running out of boost
 @export var max_boost_timeout = 4 # Maximum how long to wait before boosting again, after running out of boost
 
@@ -26,6 +27,7 @@ static var random_names = Global.random_names
 
 var name_selected = false
 var current_boost_probability = 0
+var current_boost_cutoff_probability = 0
 var current_boost_timeout = 0
 var current_target_position = Vector3.ZERO
 var current_knockdown_try_time = 0
@@ -81,6 +83,9 @@ func select_random_name():
 		attempts += 1
 	
 	name = random_name
+	
+	if self.has_node("NameLabel"):
+		$NameLabel.text = name
 	
 func select_random_vehicle():
 
@@ -245,8 +250,9 @@ func determine_boost(delta):
 		if player_index != -1:
 			var position_factor = float(player_index) / float(player_count - 1)  # Relative position from 0 (first place) to 1 (last place)
 			current_boost_probability = lerp(min_boost_probability, max_boost_probability, position_factor)
+			current_boost_cutoff_probability = lerp(min_boost_cutoff_probability, max_boost_cutoff_probability, position_factor)
 			if randf() < current_boost_probability or boosting:
-				if randf() < boost_cutoff_probability:
+				if randf() < current_boost_cutoff_probability:
 					boost_pressed = false
 				else:
 					boost_pressed = true
