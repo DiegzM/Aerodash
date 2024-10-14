@@ -14,6 +14,8 @@ extends Node3D
 @onready var knockdowns = Global.knockdowns
 @onready var meme_sounds = Global.meme_sounds
 
+@onready var motion_blur = Global.motion_blur
+
 @onready var fade = $Fade
 @onready var main_menu_dir = "res://Levels/Main.tscn"
 
@@ -39,6 +41,7 @@ func _ready():
 		meme_sounds = false
 	if ost:
 		ost.volume_db = ost_volume
+	update_motion_blur()
 	
 func find_characters(node: Node):
 	if node is BaseCharacter and node.name != "BaseCharacter":
@@ -46,7 +49,12 @@ func find_characters(node: Node):
 	
 	for child in node.get_children():
 		find_characters(child)
-		
+
+func update_motion_blur():
+	if $WorldEnvironment and not motion_blur:
+		if $WorldEnvironment.compositor:
+			$WorldEnvironment.compositor = null
+	
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		paused = !paused

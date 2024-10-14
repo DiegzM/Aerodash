@@ -20,18 +20,6 @@ border_color = Color(0.8, 0.8, 0.8, 0)
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_color = Color(0.8, 0.8, 0.8, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ttkd4"]
-bg_color = Color(1, 0.466667, 0.0745098, 1)
-border_width_left = 10
-border_width_top = 10
-border_width_right = 10
-border_width_bottom = 10
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ldem"]
 bg_color = Color(0.242966, 0.242966, 0.242966, 1)
 border_width_left = 8
@@ -50,6 +38,18 @@ border_width_left = 8
 border_width_top = 8
 border_width_right = 8
 border_width_bottom = 8
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ttkd4"]
+bg_color = Color(1, 0.466667, 0.0745098, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
 border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 15
 corner_radius_top_right = 15
@@ -234,9 +234,9 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_7qpqa")
 theme_override_font_sizes/font_size = 150
-theme_override_styles/normal = SubResource("StyleBoxFlat_ttkd4")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1ldem")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_prntg")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ttkd4")
 text = "START"
 
 [node name="SettingsButton" type="TextureButton" parent="MapSetup"]
@@ -476,9 +476,9 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_7qpqa")
 theme_override_font_sizes/font_size = 150
-theme_override_styles/normal = SubResource("StyleBoxFlat_ttkd4")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1ldem")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_prntg")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ttkd4")
 text = "PLAY"
 
 [node name="TitleScreenExit" type="Button" parent="TitleScreen"]
@@ -497,9 +497,9 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_7qpqa")
 theme_override_font_sizes/font_size = 150
-theme_override_styles/normal = SubResource("StyleBoxFlat_3chrt")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1ldem")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_prntg")
+theme_override_styles/normal = SubResource("StyleBoxFlat_3chrt")
 text = "EXIT GAME"
 
 [node name="SettingsButton" type="TextureButton" parent="TitleScreen"]
@@ -558,8 +558,8 @@ libraries = {
 [connection signal="pressed" from="SelectMap/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="TitleScreen/TitleScreenPlay" to="." method="_on_title_screen_play_pressed"]
 [connection signal="pressed" from="TitleScreen/TitleScreenPlay" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="TitleScreen/TitleScreenExit" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="TitleScreen/TitleScreenExit" to="." method="_on_title_screen_exit_pressed"]
+[connection signal="pressed" from="TitleScreen/TitleScreenExit" to="." method="_on_button_pressed"]
 [connection signal="mouse_entered" from="TitleScreen/SettingsButton" to="TitleScreen/SettingsButton" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="TitleScreen/SettingsButton" to="TitleScreen/SettingsButton" method="_on_mouse_exited"]
 [connection signal="pressed" from="TitleScreen/SettingsButton" to="." method="_on_settings_button_pressed"]

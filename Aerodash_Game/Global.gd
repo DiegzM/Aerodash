@@ -3,6 +3,8 @@ extends Node
 var knockdowns = true
 var meme_sounds = true
 
+var motion_blur = false
+
 var random_names = []
 # Called when the node enters the scene tree for the first time.
 func _ready():

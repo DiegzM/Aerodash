@@ -5,7 +5,7 @@ extends Node3D
 @export var max_fov_speed = 180
 
 @export var fov_smoothness: float = 10  # Smoothness for the FOV change
-@export var max_shake_magnitude: float = 0.2
+@export var max_shake_magnitude: float = 0.1
 @export var collision_shake_magnitude: float = 1.8
 @export var collision_shake_magnitude_damping: float = 0.04
 @export var collision_shake_fov: float = 5
@@ -116,6 +116,8 @@ func apply_camera_shake(delta):
 		randf_range(-shake_strength, shake_strength),
 		0
 	)
+	
+	camera.transform.origin += target_shake_offset
 
 func apply_collision_camera_shake(delta):
 	camera.transform.origin = previous_camera_position

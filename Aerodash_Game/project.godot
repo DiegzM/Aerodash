@@ -90,5 +90,8 @@ debug={
 
 [physics]
 
+common/physics_ticks_per_second=120
+common/physics_jitter_fix=0.75
 3d/default_gravity=2.08165e-12
 3d/default_gravity_vector=Vector3(2.08165e-12, -1, 2.08165e-12)
+common/physics_interpolation=true

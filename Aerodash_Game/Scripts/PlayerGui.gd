@@ -19,6 +19,14 @@ var current_knockdown_text_timer = 0
 
 var final_leaderboard_timer = 3.0
 
+var min_anim_speed = 0.75
+var max_anim_speed = 20.0
+var min_anim_visibility = 0.0
+var max_anim_visibility = 0.05
+var max_speed = 300
+
+var base_speed_lines_scale = 4.3
+
 var race_started
 
 var prev_dead = false
@@ -32,6 +40,7 @@ func _process(delta):
 	update_wind(delta)
 	update_knockdown(delta)
 	update_final_leaderboard(delta)
+	update_speed_lines(delta)
 	
 	if not race_started:
 		update_countdown(delta)
@@ -59,7 +68,24 @@ func _process(delta):
 		
 	if player.dead:
 		update_respawn_countdown(delta)
-		
+
+func update_speed_lines(delta):
+	var sprite = $SpeedLineGui/SpeedLines
+	var player_speed = player.linear_velocity.length()
+	var speed_ratio = clamp(player_speed / max_speed, 0, 1)
+
+	sprite.play("default")
+	sprite.speed_scale = lerp(min_anim_speed, max_anim_speed, speed_ratio)
+	sprite.modulate.a = lerp(min_anim_visibility, max_anim_visibility, speed_ratio)
+
+	# Adjust scale as before
+	var speedline_size = $SpeedLineGui.size
+	var viewport_size = get_viewport().size
+	var scale_factor_x = speedline_size.x / viewport_size.x
+	var scale_factor_y = speedline_size.y / viewport_size.y
+	var scale_factor = max(scale_factor_x, scale_factor_y) * base_speed_lines_scale
+	sprite.scale = Vector2(scale_factor, scale_factor)
+	
 func update_text(delta):
 	place = level_manager.get_place(player)
 	racer_count = level_manager.get_racer_count()
