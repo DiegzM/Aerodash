@@ -145,6 +145,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BackButton" type="TextureButton" parent="MapSetup" node_paths=PackedStringArray("go_to_gui")]
+layout_mode = 0
 offset_left = 39.0
 offset_top = 48.0
 offset_right = 166.0
@@ -306,7 +307,7 @@ grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_7qpqa")
 theme_override_font_sizes/font_size = 70
-text = "MOVEMENT: W/A/S/D
+text = "MOVEMENT: W/A/S/D/Shift/Space
 
 ROLL: Q/E
 
@@ -317,6 +318,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BackButton" type="TextureButton" parent="Settings" node_paths=PackedStringArray("go_to_gui")]
+layout_mode = 0
 offset_left = 39.0
 offset_top = 48.0
 offset_right = 166.0
@@ -385,6 +387,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BackButton" type="TextureButton" parent="SelectMap" node_paths=PackedStringArray("go_to_gui")]
+layout_mode = 0
 offset_left = 39.0
 offset_top = 48.0
 offset_right = 166.0

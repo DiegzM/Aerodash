@@ -67,21 +67,7 @@ func _ready():
 		collision_box = $CollisionShape3D
 
 func select_random_name():
-	var random_name = ""
-	var attempts = 0
-	
-	while true:
-		random_name = Global.random_names[randi() % Global.random_names.size()]
-		var name_taken = false
-		for character in characters:
-			if character.name == random_name:
-				name_taken = true
-				break
-
-		if not name_taken or attempts >= Global.random_names.size():
-			break
-		attempts += 1
-	
+	var random_name = Global.get_random_name()
 	name = random_name
 	
 	if self.has_node("NameLabel"):

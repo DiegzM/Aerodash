@@ -11,11 +11,15 @@ extends Node3D
 @export var collision_shake_fov: float = 5
 @export var collision_shake_fov_damping: float = 0.1
 
+@export var camera_position_damping: float = 0.2
+@export var velocity_offset_strength: float = 0.004  # Controls how far back the camera drifts based on velocity
+
 @export var mouse_sensitivity: float = 0.3
 
 @onready var current_roll_speed: float = 0.0  # Variable to track the current roll speed
 @onready var current_collision_shake_magnitude: float = collision_shake_magnitude
 @onready var current_collision_fov: float = collision_shake_fov
+@onready var velocity_offset = Vector3.ZERO
 @onready var knocking_down = false
 @onready var camera = $Camera
 @onready var player = get_parent().get_node("Player")
@@ -57,6 +61,7 @@ func _physics_process(delta):
 			apply_fov(delta)
 			apply_rotation(delta)
 			apply_camera_shake(delta)
+			apply_camera_position_damping(delta)
 			if player.knockdown or knocking_down:
 				if not knocking_down:
 					knocking_down = true
@@ -92,6 +97,14 @@ func apply_rotation(delta):
 
 		mouse_delta = Vector2.ZERO
 
+func apply_camera_position_damping(delta):
+	var player_velocity = player.linear_velocity
+	var target_offset = -player_velocity * velocity_offset_strength
+	
+	velocity_offset = velocity_offset.lerp(target_offset, camera_position_damping)
+	var target_position = camera.global_transform.origin + velocity_offset
+	camera.global_transform.origin = target_position
+	
 func apply_camera_shake(delta):
 	# Reset camera position to the previous position before adding shake
 	camera.transform.origin = previous_camera_position

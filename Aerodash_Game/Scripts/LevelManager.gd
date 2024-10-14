@@ -6,6 +6,11 @@ extends Node3D
 @export var countdown_timer = 5
 @export var laps = 3
 
+@export var map_ost: AudioStream
+@export var map_ost_intro: AudioStream
+@export var ost_volume = 0.0
+
+@onready var ost = $OST
 @onready var knockdowns = Global.knockdowns
 @onready var meme_sounds = Global.meme_sounds
 
@@ -18,7 +23,10 @@ extends Node3D
 
 var race_started = false
 
+var leaderboard_pressed = false
 var paused = false
+
+var ost_intro_finished = false
 
 var characters: Array = []
 var final_leaderboard: Array = []
@@ -29,8 +37,9 @@ func _ready():
 	fade.get_node("AnimationPlayer").play("fade_in")
 	if not knockdowns:
 		meme_sounds = false
-	pass
-
+	if ost:
+		ost.volume_db = ost_volume
+	
 func find_characters(node: Node):
 	if node is BaseCharacter and node.name != "BaseCharacter":
 		characters.append(node)
@@ -46,6 +55,7 @@ func _input(event):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	update_places(delta)
+	update_ost()
 	if not race_started:
 		update_countdown_timer(delta)
 
@@ -91,6 +101,21 @@ func compare_positions(a, b):
 	elif a.get_instance_id() > b.get_instance_id():
 		return false
 
+func update_ost():
+	if map_ost and ost:
+		if not ost.playing:
+			if map_ost_intro:
+				if not ost_intro_finished:
+					ost.stream = map_ost_intro
+					ost.playing = true
+					ost_intro_finished = true
+				else:
+					ost.stream = map_ost
+					ost.playing = true
+			else:
+				ost.stream = map_ost
+				ost.playing = true
+
 func get_place(character):
 	for i in range(characters.size()):
 		if characters[i] == character:
@@ -102,3 +127,17 @@ func get_racer_count():
 	
 func get_characters():
 	return characters
+
+func fade_out():
+	fade.get_node("AnimationPlayer").play("fade_out")
+	
+func _on_animation_player_animation_finished(anim_name):
+	if anim_name == "fade_out" and leaderboard_pressed:
+		get_tree().change_scene_to_packed(load(main_menu_dir))
+
+
+
+func _on_ost_finished():
+	print("yes")
+	ost_intro_finished = true
+	ost.playing = false

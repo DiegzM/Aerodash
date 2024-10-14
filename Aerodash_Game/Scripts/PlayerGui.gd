@@ -204,4 +204,5 @@ func get_place_suffix(place: int) -> String:
 
 
 func _on_back_to_menu_pressed():
+	level_manager.leaderboard_pressed = true
 	level_manager.fade_out()
