@@ -31,7 +31,7 @@ func _ready():
 		add_child(child)
 		
 	for child in get_children():
-		if child.name == "Audio":
+		if child.name == "Audio" or child.name == "Exhaust":
 			child.body = self
 	
 	for section in track_sections:
@@ -44,7 +44,16 @@ func _ready():
 
 	if $CollisionShape3D:
 		collision_box = $CollisionShape3D
+		
+	if $MeshInstance3D:
+		var parent_mesh = $MeshInstance3D.mesh
+		if $MeshInstance3D.has_node("Outline"):
+			var outline_mesh = $MeshInstance3D.get_node("Outline")
 
+			outline_mesh.mesh = parent_mesh
+			var outline_material = ShaderMaterial.new()
+			outline_material.shader = load("res://Shaders/outline.gdshader")
+			outline_mesh.material_override = outline_material
 func select_random_vehicle():
 
 	if vehicles_scenes.size() > 0:
@@ -96,7 +105,6 @@ func _physics_process(delta):
 	update_gates_transparency(delta)
 
 func update_gates_transparency(delta):
-	
 	for section in track_sections:
 		var gate_mesh = get_gate_mesh(section.get_node("Gate"))
 		if gate_mesh:
@@ -159,10 +167,7 @@ func get_input_rotation() -> Vector3:
 	
 func _on_section_boundary_exited(body):
 	if body == self and not dead:
-		pivot.global_rotation = current_gate.global_rotation
-		global_transform = current_gate.global_transform
-		global_rotation = current_gate.global_rotation
-		linear_velocity /= 2
+		off_track = true
 
 func on_section_passed(gate: Node3D):
 	super(gate)

@@ -1,7 +1,7 @@
 extends Node
 
 var knockdowns = true
-var meme_sounds = true
+var meme_sounds = false
 
 var motion_blur = false
 

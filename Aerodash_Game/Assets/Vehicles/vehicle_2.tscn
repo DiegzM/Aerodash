@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bhuv8gubp2uht"]
+[gd_scene load_steps=31 format=3 uid="uid://bhuv8gubp2uht"]
 
 [ext_resource type="Script" path="res://Scripts/vehicle_audio.gd" id="1_velgn"]
 [ext_resource type="ArrayMesh" uid="uid://bagm26hxe8lbu" path="res://Assets/Vehicles/vehicle_1.obj" id="1_vqinc"]
@@ -7,6 +7,9 @@
 [ext_resource type="AudioStream" uid="uid://cy5hqw3tigglc" path="res://Assets/Audio/vehicle_2_loop.mp3" id="4_f7fmg"]
 [ext_resource type="Texture2D" uid="uid://2mus2o3hh607" path="res://Assets/Effects/smoke.webp" id="5_imhk1"]
 [ext_resource type="FontFile" uid="uid://boywltg32uvvf" path="res://Assets/Fonts/Pildrone-LVAy4.otf" id="6_aufwv"]
+[ext_resource type="Shader" path="res://Shaders/engine.gdshader" id="8_fctvi"]
+[ext_resource type="Texture2D" uid="uid://dlhwcj41r3iq0" path="res://Shaders/noise.jpg" id="9_12uud"]
+[ext_resource type="Script" path="res://Assets/Vehicles/vehicle_exhaust.gd" id="10_g0dnr"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u2gwf"]
 albedo_color = Color(0.427451, 0.427451, 0.427451, 1)
@@ -100,6 +103,29 @@ material = SubResource("StandardMaterial3D_xuuk4")
 uv2_padding = 1.7
 size = Vector2(8, 8)
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_elbs7"]
+top_radius = 0.2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ly0ew"]
+render_priority = 0
+shader = ExtResource("8_fctvi")
+shader_parameter/model_height = 3.0
+shader_parameter/dissolve_start = 0.0
+shader_parameter/dissolve_length = 0.459
+shader_parameter/gradient_bias = 0.557
+shader_parameter/noise_direction = Vector2(0, 1)
+shader_parameter/noise_speed = 6.0
+shader_parameter/noise_strength = 0.1
+shader_parameter/stretch_factor = 0.1
+shader_parameter/noise_texture = ExtResource("9_12uud")
+shader_parameter/_color = Color(0.695572, 0.897251, 1, 1)
+shader_parameter/power_factor = 0.52
+shader_parameter/alpha_intensity_factor = 2.0
+shader_parameter/fresnel_factor = 15.0
+shader_parameter/fresnel_amplification = 2.0
+shader_parameter/fresnel_power = 2.0
+shader_parameter/enable_fresnel = true
+
 [node name="vehicle_2" type="RigidBody3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -115,6 +141,8 @@ surface_material_override/5 = SubResource("StandardMaterial3D_lcog2")
 script = ExtResource("2_ym376")
 base_color = Color(0.419608, 0.419608, 0.419608, 1)
 variation_range = 0.8
+
+[node name="Outline" type="MeshInstance3D" parent="MeshInstance3D"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(2.9, 0, 0, 0, 1.674, 0, 0, 0, 8.363, 2.08165e-12, 2.08165e-12, 2.08165e-12)
@@ -156,3 +184,12 @@ billboard = 1
 text = "
 "
 font = ExtResource("6_aufwv")
+
+[node name="Exhaust" type="Node3D" parent="."]
+script = ExtResource("10_g0dnr")
+
+[node name="1" type="MeshInstance3D" parent="Exhaust"]
+transform = Transform3D(2.09167, 0, 0, 0, -2.40236e-07, -0.23882, 0, 5.49595, -1.04392e-08, -0.00146008, -0.198527, 8.98416)
+mesh = SubResource("CylinderMesh_elbs7")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_ly0ew")

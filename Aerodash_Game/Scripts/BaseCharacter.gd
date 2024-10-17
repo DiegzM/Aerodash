@@ -8,6 +8,7 @@ const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_sp
 const MIN_BOOST_SPEED = Vector3(135, 135, 135) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
 const MAX_BOOST_SPEED = Vector3(135, 135, 135)
 const MAX_BOOST_TIME = 7
+const SPEED_PENALTY_MULTIPLIER = 0.5
 const MIN_BOOST_RECHARGE_SPEED = 1.4 # Boost recharge speed at first place
 const MAX_BOOST_RECHARGE_SPEED = 4.4 # Boost recharge speed at last place
 const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
@@ -57,6 +58,7 @@ var elapsed_time = 0.0
 
 var current_respawn_time = RESPAWN_TIME
 var current_forcefield_time = 0
+var off_track = false
 var dead = false
 var knockdown = false
 var knockdown_streak = 0
@@ -159,6 +161,9 @@ func apply_movement(state):
 		current_max_speed *= downward_factor
 		current_acceleration *= downward_factor
 	
+	if off_track:
+		current_max_speed *= SPEED_PENALTY_MULTIPLIER
+		
 	if speed > current_max_speed:
 		target_velocity = state.linear_velocity.normalized() * current_max_speed
 		state.linear_velocity = lerp(state.linear_velocity, target_velocity, LERP_VELOCITY)
@@ -286,12 +291,15 @@ func on_section_passed(gate: Node3D):
 			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
 				boundary.body_exited.connect(_on_section_boundary_exited)
 		
-		current_section_index += 1
-		if current_section_index >= track.get_child_count():
-			current_section_index = 0
+		var target_section_index = current_section.get_name().to_int()
+		if target_section_index == 0 and not current_section_index == -1:
 			lap += 1
-			
+		
+		current_section_index = target_section_index
+		
 		next_gate = get_next_gate(current_section_index)
+		
+		off_track = false
 		
 		if lap > level_manager.laps:
 			race_finished = true
@@ -325,9 +333,7 @@ func handle_collisions():
 			
 func _on_section_boundary_exited(body):
 	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
-		print(dead)
-		global_transform = current_gate.global_transform
-		linear_velocity = Vector3.ZERO
+		off_track = true
 
 # Placeholder method, to be implemented by subclasses (Player or AI)
 func get_input_vector() -> Vector3:

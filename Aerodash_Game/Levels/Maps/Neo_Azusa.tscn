@@ -1653,7 +1653,7 @@ text = "BACK TO MAIN MENU"
 script = ExtResource("6_byckk")
 
 [node name="Camera" type="Camera3D" parent="PlayerInterface/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 1.8, 11.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30766, 8.71463)
 current = true
 far = 40000.0
 

@@ -1,11 +1,11 @@
 extends Node3D
 
 @export var max_fov = 140
-@export var min_fov = 75
+@export var min_fov = 85
 @export var max_fov_speed = 180
 
 @export var fov_smoothness: float = 10  # Smoothness for the FOV change
-@export var max_shake_magnitude: float = 0.1
+@export var max_shake_magnitude: float = 0.05
 @export var collision_shake_magnitude: float = 1.8
 @export var collision_shake_magnitude_damping: float = 0.04
 @export var collision_shake_fov: float = 5

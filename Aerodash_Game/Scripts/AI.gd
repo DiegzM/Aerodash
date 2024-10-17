@@ -58,7 +58,7 @@ func _ready():
 		add_child(child)
 	
 	for child in get_children():
-		if child.name == "Audio":
+		if child.name == "Audio" or child.name == "Exhaust":
 			child.body = self
 			
 	remove_child(vehicle_instance)
@@ -254,10 +254,7 @@ func determine_boost(delta):
 
 func _on_section_boundary_exited(body):
 	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
-		pivot.global_rotation = current_gate.global_rotation
-		global_transform = current_gate.global_transform
-		global_rotation = current_gate.global_rotation
-		linear_velocity /= 3
+		off_track = true
 
 func on_section_passed(gate: Node3D):
 	super(gate)
