@@ -8,7 +8,7 @@ const MAX_SPEED = Vector3(90, 90, 90) # Vector3(forward_max_speed, upward_max_sp
 const MIN_BOOST_SPEED = Vector3(135, 135, 135) # Vector3(forward_max_boost_speed, upward_max_boost_speed, side_max_boost_speed)
 const MAX_BOOST_SPEED = Vector3(135, 135, 135)
 const MAX_BOOST_TIME = 7
-const SPEED_PENALTY_MULTIPLIER = 0.5
+const SPEED_PENALTY_MULTIPLIER = 0.65
 const MIN_BOOST_RECHARGE_SPEED = 1.4 # Boost recharge speed at first place
 const MAX_BOOST_RECHARGE_SPEED = 4.4 # Boost recharge speed at last place
 const MAX_DOWNWARD_FACTOR = 1.6 # How many times to increase speed when facing vertically down
@@ -18,6 +18,9 @@ const ROLL_SPEED = 4.0
 # DAMPING
 const MOVEMENT_DAMPING = 0.95 # Closer to 1 is slower
 const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
+
+# OFFTRACK SETTINGS
+const MAX_DISTANCE = 200 # How far from current section before moved back to the current gate
 
 # COLLISION
 const COLLISION_SPEED = 40 # How fast a collision has to be in order to crash another racer (or get crashed)
@@ -30,7 +33,14 @@ const FORCEFIELD_TIME = 4.0 # How long to be protected after respawning
 
 # ROTATION SMOOTHNESS
 const ROTATION_SMOOTHNESS = 0.1 # Lower value = smoother (slow), higher value = faster
-const LERP_VELOCITY = 0.9 # Incase speed reaches max, allow for smooth slowdown
+const LERP_VELOCITY = 0.05 # Incase speed reaches max, allow for smooth slowdown
+
+# DASH
+const DOUBLE_TAP_THRESHOLD = 0.3  # Adjust this value as needed
+const DASH_MULTIPLIER = 180
+const DASH_ROTATION_SPEED = 10.0
+const DASH_ROTATION_SMOOTHNESS = 0.2
+
 ##################################
 
 var boost_pressed = false
@@ -60,11 +70,23 @@ var current_respawn_time = RESPAWN_TIME
 var current_forcefield_time = 0
 var off_track = false
 var dead = false
+var chased = false
+var chased_by = null
 var knockdown = false
 var knockdown_streak = 0
 var current_knockdown_streak_time = 0
 var total_knockdowns = 0
 var total_deaths = 0
+
+var last_press_time = {
+	"move_left": 0.0,
+	"move_right": 0.0,
+	"move_up": 0.0,
+	"move_down": 0.0
+}
+var dashing = false
+var current_dash_vector = Vector3.ZERO
+var total_rotation_angle = 0.0
 
 var level_manager = null
 var characters = null
@@ -105,12 +127,16 @@ func _physics_process(delta):
 		forcefield_time(delta)
 		smoke(delta)
 		if not dead:
+			check_distance()
 			if level_manager.knockdowns:
 				handle_collisions()
 				knockdown_time(delta)
 	if dead:
+		chased = false
 		respawn(delta)
 		death_movement()
+	if race_finished:
+		chased = false
 	
 	if race_finished and final_place == -1:
 		final_place = level_manager.final_leaderboard.find(self)
@@ -118,8 +144,8 @@ func _physics_process(delta):
 func _integrate_forces(state):
 	set_sleeping(false)
 	if (level_manager.race_started and not race_finished and not dead):
-		apply_rotation(state)
 		apply_movement(state)
+		apply_rotation(state)
 	
 # Calculates movement
 func apply_movement(state):
@@ -160,13 +186,23 @@ func apply_movement(state):
 		var downward_factor = lerp(1.0, MAX_DOWNWARD_FACTOR, abs(vertical_angle))
 		current_max_speed *= downward_factor
 		current_acceleration *= downward_factor
+		
+	var dash_vector = get_dash_vector()
+	var dash_force = get_dash_force(dash_vector, local_force)
+	
+	if not dash_force == Vector3.ZERO and not dashing:
+		dashing = true
+		current_dash_vector = dash_vector
+		var local_dash_force = global_transform.basis * dash_force
+		apply_impulse(dash_force)
 	
 	if off_track:
 		current_max_speed *= SPEED_PENALTY_MULTIPLIER
-		
+	
 	if speed > current_max_speed:
 		target_velocity = state.linear_velocity.normalized() * current_max_speed
 		state.linear_velocity = lerp(state.linear_velocity, target_velocity, LERP_VELOCITY)
+	
 		
 	apply_force(local_force)
 
@@ -180,10 +216,53 @@ func apply_rotation(state):
 	current_rotation.x = lerp_angle(current_rotation.x, target_rotation.x, ROTATION_SMOOTHNESS)
 	current_rotation.y = lerp_angle(current_rotation.y, target_rotation.y, ROTATION_SMOOTHNESS)
 	current_rotation.z = lerp_angle(current_rotation.z, target_rotation.z, ROTATION_SMOOTHNESS)
+	
+	# Apply the new smooth rotationw
+	global_rotation = current_rotation + apply_dash_rotation()
 
-	# Apply the new smooth rotation
-	global_rotation = current_rotation
+func get_dash_force(vector, force):
+	var dash_vector = vector
+	
+	var dash_force = Vector3(DASH_MULTIPLIER * dash_vector.x,
+						DASH_MULTIPLIER * dash_vector.y,
+						DASH_MULTIPLIER * dash_vector.z) * global_transform.basis.inverse()
+	
+	return dash_force
+	
+func apply_dash_rotation() -> Vector3:
+	# Check if dashing and if there is a valid dash direction
+	if dashing and current_dash_vector != Vector3.ZERO:
+		var progress = total_rotation_angle / 360.0
+		var roll_angle_increment = lerp(DASH_ROTATION_SPEED, 1.0, progress)
+		var roll_angle_radians = deg_to_rad(roll_angle_increment)
+		
+		var rotation_increment = Vector3.ZERO
+		
+		if current_dash_vector.x != 0:
+			rotation_increment.z = roll_angle_radians * -sign(current_dash_vector.x)  # Z-axis rotation
+		elif current_dash_vector.y != 0:
+			rotation_increment.x = roll_angle_radians * sign(current_dash_vector.y)   # X-axis rotation
+		elif current_dash_vector.z != 0:
+			rotation_increment.y = roll_angle_radians * sign(current_dash_vector.z)   # Y-axis rotation
+		
+		total_rotation_angle += roll_angle_increment
+		
+		if total_rotation_angle >= 360.0:
+			total_rotation_angle = 0.0  # Reset total rotation angle
+			dashing = false  # Stop dashing
+			current_dash_vector = Vector3.ZERO  # Reset dash direction
+		
+		# Return the rotation increment to be applied elsewhere (not added directly here)
+		return rotation_increment
+	
+	return Vector3.ZERO  # Return zero if not dashing
 
+
+
+func check_distance():
+	if self.global_transform.origin.distance_to(current_section.global_transform.origin) >= MAX_DISTANCE:
+		global_transform = current_gate.global_transform
+	
 func death_movement(): 
 	var local_force = Vector3(0, -ACCELERATION.y, 0)
 	apply_force(local_force)
@@ -275,34 +354,41 @@ func get_previous_gate(section_index) -> Node3D:
 		gate = track.get_child(track.get_child_count() - 1).get_node("Gate")
 	return gate
 	
-func on_section_passed(gate: Node3D):
-	if current_gate != gate and not dead:
-		previous_section = current_section
-		current_section = gate.get_parent()
-		current_gate = gate
-		
-		if previous_section and previous_section.has_node("SectionBoundary"):
-			var prev_boundary = previous_section.get_node("SectionBoundary")
-			if prev_boundary.body_exited.is_connected(_on_section_boundary_exited):
-				prev_boundary.body_exited.disconnect(_on_section_boundary_exited)
+func on_section_passed(gate, gate_passed):
+	if gate != current_gate and not dead:
+		var target_section_index = gate.get_parent().get_name().to_int()
+		if (current_section_index + 1 == target_section_index or (current_section_index == track_sections.size() - 1 and target_section_index == 0)):
+					
+			if target_section_index == 0 and not current_section_index == -1:
+				lap += 1
+			
+			current_section_index = target_section_index
+			previous_section = current_section
+			current_section = gate.get_parent()
+			current_gate = gate
+			
+			if previous_section and previous_section.has_node("SectionBoundary"):
+				var prev_boundary = previous_section.get_node("SectionBoundary")
+				if prev_boundary.body_exited.is_connected(_on_section_boundary_exited):
+					prev_boundary.body_exited.disconnect(_on_section_boundary_exited)
 
-		if current_section.has_node("SectionBoundary"):
-			var boundary = current_section.get_node("SectionBoundary")
-			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
-				boundary.body_exited.connect(_on_section_boundary_exited)
+			if current_section.has_node("SectionBoundary"):
+				var boundary = current_section.get_node("SectionBoundary")
+				if not boundary.body_exited.is_connected(_on_section_boundary_exited):
+					boundary.body_exited.connect(_on_section_boundary_exited)
+			
+			next_gate = get_next_gate(current_section_index)
+			
+			if not gate_passed:
+				off_track = true
+			else:
+				off_track = false
 		
-		var target_section_index = current_section.get_name().to_int()
-		if target_section_index == 0 and not current_section_index == -1:
-			lap += 1
-		
-		current_section_index = target_section_index
-		
-		next_gate = get_next_gate(current_section_index)
-		
-		off_track = false
-		
-		if lap > level_manager.laps:
-			race_finished = true
+			if lap > level_manager.laps:
+				race_finished = true
+				
+		else:
+			global_transform = current_gate.global_transform
 
 func handle_collisions():
 	var colliding_bodies = get_colliding_bodies()
@@ -317,6 +403,7 @@ func handle_collisions():
 						knockdown = true
 						total_knockdowns += 1
 						body.dead = true
+						body.total_deaths += 1
 				elif linear_velocity.length() < body.linear_velocity.length() - COLLISION_DIFFERENCE:
 					if current_forcefield_time <= 0:
 						total_deaths += 1
@@ -328,15 +415,20 @@ func handle_collisions():
 					if body.current_forcefield_time <= 0:
 						knockdown = true
 						body.dead = true
+						body.total_deaths += 1
 						total_knockdowns += 1
 						
 			
 func _on_section_boundary_exited(body):
-	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
-		off_track = true
+	pass
+	#if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
+		#off_track = true
 
 # Placeholder method, to be implemented by subclasses (Player or AI)
 func get_input_vector() -> Vector3:
+	return Vector3.ZERO
+
+func get_dash_vector() -> Vector3:
 	return Vector3.ZERO
 	
 func get_input_rotation() -> Vector3:

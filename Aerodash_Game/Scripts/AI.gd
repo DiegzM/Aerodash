@@ -14,8 +14,8 @@ extends "res://Scripts/BaseCharacter.gd"
 @export var min_boost_timeout = 2 # Minimum how long to wait before boosting again, after running out of boost
 @export var max_boost_timeout = 4 # Maximum how long to wait before boosting again, after running out of boost
 
-@export var knockdown_chance = 0.004 # How likely AI will try to knockdown the racer infront any frame if knockdown_distance close enough
-@export var knockdown_distance = 50
+@export var knockdown_chance = 0.003 # How likely AI will try to knockdown the racer infront any frame if knockdown_distance close enough
+@export var knockdown_distance = 100
 @export var knockdown_try_time = 5 # How long to try knocking down before giving up
 
 @export var min_adjustment_speed = 1.0
@@ -149,13 +149,19 @@ func determine_knockdown(delta):
 			if global_transform.origin.distance_to(target_player.global_transform.origin) <= knockdown_distance:
 				if randf() <= knockdown_chance and not knocking_down and not target_player.current_forcefield_time > 0:
 					knocking_down = true
+					target_player.chased = true
+					target_player.chased_by = self
 					current_knockdown_try_time = knockdown_try_time
 				if knocking_down:
 					current_knockdown_try_time -= delta
 					if current_knockdown_try_time <= 0:
 						knocking_down = false
+						target_player.chased = false
+						target_player.chased_by = null
 			else:
 				knocking_down = false
+				target_player.chased = false
+				target_player.chased_by = null
 		else:
 			knocking_down = false
 	
@@ -178,7 +184,7 @@ func predict_future_position(time_ahead: float) -> Vector3:
 
 func calculate_target_position(gate) -> Vector3:
 	var closest_point = get_closest_point_to_gate(gate)
-	var collision_shape = gate.get_node("Trigger/CollisionShape3D")
+	var collision_shape = gate.get_node("GatePass/CollisionShape3D")
 	
 	if collision_shape and collision_shape.shape is CylinderShape3D:
 		if knocking_down:
@@ -210,7 +216,7 @@ func calculate_target_position(gate) -> Vector3:
 		return Vector3.ZERO
 	
 func get_closest_point_to_gate(gate) -> Vector3:
-	var collision_shape = gate.get_node("Trigger/CollisionShape3D")
+	var collision_shape = gate.get_node("GatePass/CollisionShape3D")
 	if collision_shape and collision_shape.shape is CylinderShape3D:
 		var radius = collision_shape.scale.x - radius_offset
 		
@@ -253,11 +259,12 @@ func determine_boost(delta):
 		current_boost_timeout -= delta
 
 func _on_section_boundary_exited(body):
-	if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
-		off_track = true
+	pass
+	#if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
+		#off_track = true
 
-func on_section_passed(gate: Node3D):
-	super(gate)
+func on_section_passed(gate, gate_passed):
+	super(gate, gate_passed)
 	if not dead:
 		current_target_position = calculate_target_position(next_gate)
 	if current_gate != gate:

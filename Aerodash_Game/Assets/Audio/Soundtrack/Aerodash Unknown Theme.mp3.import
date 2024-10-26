@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://0gvcvyhha762"
+path="res://.godot/imported/Aerodash Unknown Theme.mp3-dda76988981c211175e66ca62a3875d7.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Soundtrack/Aerodash Unknown Theme.mp3"
+dest_files=["res://.godot/imported/Aerodash Unknown Theme.mp3-dda76988981c211175e66ca62a3875d7.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

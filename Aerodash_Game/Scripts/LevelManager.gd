@@ -71,7 +71,7 @@ func update_countdown_timer(delta):
 	countdown_timer -= delta
 	if countdown_timer <= 0:
 		race_started = true
-		
+
 func update_places(delta):
 	characters.sort_custom(compare_positions)
 	for character in characters:

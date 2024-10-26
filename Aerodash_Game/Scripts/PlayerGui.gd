@@ -19,6 +19,13 @@ var current_knockdown_text_timer = 0
 
 var final_leaderboard_timer = 3.0
 
+var danger_sign_anim = Vector3(0.1, 0.1, 0.1)
+var danger_sign_timer = 0.0
+var danger_sign_fade_phase = 0
+var rearcam_anim = 0.1
+var rearcam_timer = 0.0
+var rearcam_fade_phase = 0
+
 var min_anim_speed = 0.75
 var max_anim_speed = 20.0
 var min_anim_visibility = 0.0
@@ -30,17 +37,23 @@ var base_speed_lines_scale = 4.3
 var race_started
 
 var prev_dead = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	var rearcam_rid = get_parent().get_node("CameraPivot/TPBCamera").get_camera_rid()
+	var viewport_rid = $SubViewportContainer/SubViewport.get_viewport_rid()
+	RenderingServer.viewport_attach_camera(viewport_rid, rearcam_rid)
+	$SubViewportContainer.modulate.a = 0.0
 	pass
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	update_text(delta)
 	update_wind(delta)
+	update_danger_sound(delta)
 	update_knockdown(delta)
 	update_final_leaderboard(delta)
 	update_speed_lines(delta)
+	update_rearcam(delta)
 	
 	if not race_started:
 		update_countdown(delta)
@@ -68,6 +81,11 @@ func _process(delta):
 		
 	if player.dead:
 		update_respawn_countdown(delta)
+	
+	if player.chased:
+		update_danger_gui(delta)
+	else:
+		$DangerGui/TextureRect.modulate.a = 0.0
 
 func update_speed_lines(delta):
 	var sprite = $SpeedLineGui/SpeedLines
@@ -94,6 +112,13 @@ func update_text(delta):
 	$LapGui/LapCount.text = str(player.lap)
 	$BoostGui/BoostBar.value = clamp(player.current_boost_time/player.MAX_BOOST_TIME, 0, 1)
 	update_leaderboard(delta)
+
+func update_danger_sound(delta):
+	if player.chased:
+		if not $Danger.playing:
+			$Danger.playing = true
+	else:
+		$Danger.playing = false
 	
 func update_leaderboard(delta):
 	var leaderboard_gui = $LeaderboardGui
@@ -172,6 +197,9 @@ func update_countdown(delta):
 		race_started = true
 	else:
 		update_center_text(str(ceil(timer)), "Center", delta)
+		if timer <= 3 and not $Countdown.playing:
+			$Countdown.playing = true
+		
 
 func update_center_text(text, pos, delta):
 	if pos == "Top" or pos == "All":
@@ -194,10 +222,39 @@ func update_respawn_countdown(delta):
 		update_center_text(str(ceil(player.current_respawn_time)), "Bottom", delta)
 		
 	prev_dead = player.dead
+
+func update_danger_gui(delta):
+	var image = $DangerGui/TextureRect
+	# Fade-in phase
+	if danger_sign_fade_phase == 0:
+		danger_sign_timer += delta
+		image.modulate.a = clamp(danger_sign_timer / danger_sign_anim.x, 0, 1) # Gradually increase alpha
+		if danger_sign_timer >= danger_sign_anim.x:
+			danger_sign_timer = 0 # Reset the timer
+			danger_sign_fade_phase = 1 # Move to display phase
 	
+	# Display phase (holding full opacity)
+	elif danger_sign_fade_phase == 1:
+		danger_sign_timer += delta
+		image.modulate.a = 1.0 # Fully visible
+		if danger_sign_timer >= danger_sign_anim.y:
+			danger_sign_timer = 0 # Reset the timer
+			danger_sign_fade_phase = 2 # Move to fade-out phase
+	
+	# Fade-out phase
+	elif danger_sign_fade_phase == 2:
+		danger_sign_timer += delta
+		image.modulate.a = clamp(1 - (danger_sign_timer / danger_sign_anim.z), 0, 1) # Gradually decrease alpha
+		if danger_sign_timer >= danger_sign_anim.z:
+			danger_sign_timer = 0 # Reset the timer
+			danger_sign_fade_phase = 0 # Optionally, you can reset this to loop the animation or stop
+
+
 func update_knockdown(delta):
 	if player.knockdown:
 		current_knockdown_text_timer = knockdown_text_timer
+		$Knockdown.playing = false
+		$Knockdown.playing = true
 		
 	if player.knockdown_streak > 0 and current_knockdown_text_timer > 0:
 		var streak_text = ""
@@ -210,7 +267,46 @@ func update_knockdown(delta):
 		
 		if current_knockdown_text_timer <= 0:
 			update_center_text("", "All", delta)
-		
+
+func update_rearcam(delta):
+	var image = $SubViewportContainer
+	var rearcam_gui = $RearcamGui
+	var distance_label = rearcam_gui.get_node("Distance")
+	if player.chased and image.modulate.a < 1.0:
+		rearcam_timer += delta
+		image.modulate.a = clamp(rearcam_timer / rearcam_anim, 0, 1)
+		rearcam_gui.modulate.a = clamp(rearcam_timer / rearcam_anim, 0, 1)
+		if image.modulate.a >= 1.0:
+			image.modulate.a = 1.0
+			rearcam_gui.modulate.a = 1.0
+			rearcam_timer = 0 # Reset the timer
+	elif not player.chased and image.modulate.a > 0:
+		rearcam_timer += delta
+		image.modulate.a = clamp(1 - (rearcam_timer / rearcam_anim), 0, 1)
+		rearcam_gui.modulate.a = clamp(1 - (rearcam_timer / rearcam_anim), 0, 1)
+		if image.modulate.a <= 0.0:
+			image.modulate.a = 0.0
+			rearcam_gui.modulate.a = 0.0
+			rearcam_timer = 0 # Reset the timer
+	
+	if player.chased_by:
+		var distance = player.chased_by.global_transform.origin.distance_to(player.global_transform.origin)
+		var rounded_distance = round(distance)
+		distance_label.text = "Distance: " + str(rounded_distance)
+		if rounded_distance < 15:
+			distance_label.add_theme_color_override("font_color", Color(1, 0, 0))  # Red color
+		else:
+			distance_label.add_theme_color_override("font_color", Color(1, 1, 1))  # White color
+			
+		if player.chased_by.get_node("DangerLabel"):
+			player.chased_by.get_node("DangerLabel").visible = true
+	else:
+		for char in level_manager.characters:
+			if char.has_node("DangerLabel"):
+				char.get_node("DangerLabel").visible = false
+		distance_label.text = ""
+		distance_label.add_theme_color_override("font_color", Color(1, 1, 1))  # White color
+	
 func get_place_suffix(place: int) -> String:
 	var suffix = ""
 	

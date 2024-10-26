@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://b5orf5fub1tmo"]
+[gd_scene load_steps=32 format=3 uid="uid://b5orf5fub1tmo"]
 
 [ext_resource type="ArrayMesh" uid="uid://bagm26hxe8lbu" path="res://Assets/Vehicles/vehicle_1.obj" id="1_7sweu"]
 [ext_resource type="Script" path="res://Scripts/vehicle_audio.gd" id="1_ulg3f"]
@@ -10,6 +10,7 @@
 [ext_resource type="Shader" path="res://Shaders/engine.gdshader" id="8_x36ot"]
 [ext_resource type="Texture2D" uid="uid://dlhwcj41r3iq0" path="res://Shaders/noise.jpg" id="9_ssll2"]
 [ext_resource type="Script" path="res://Assets/Vehicles/vehicle_exhaust.gd" id="10_kboky"]
+[ext_resource type="PackedScene" uid="uid://d3bhu3guchsxo" path="res://Assets/GUI/danger_label.tscn" id="11_dkjsc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68ljb"]
 albedo_color = Color(0.109804, 0.109804, 0.109804, 1)
@@ -195,3 +196,6 @@ transform = Transform3D(2.09167, 0, 0, 0, -2.40236e-07, -0.23882, 0, 5.49595, -1
 mesh = SubResource("CylinderMesh_2ptsx")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_14hx2")
+
+[node name="DangerLabel" parent="." instance=ExtResource("11_dkjsc")]
+visible = false

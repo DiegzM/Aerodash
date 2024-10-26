@@ -130,7 +130,7 @@ func update_gates_transparency(delta):
 				
 	for i in range(max_visible_gates):
 		var adjusted_section_index = max(current_section_index, 0)
-		var index = (adjusted_section_index - (i + 1) + track_sections.size()) % track_sections.size()
+		var index = (adjusted_section_index - (i) + track_sections.size()) % track_sections.size()
 		var gate = get_previous_gate(index + 1)
 		if gate:
 			var gate_mesh = get_gate_mesh(gate)
@@ -144,7 +144,6 @@ func update_gates_transparency(delta):
 # Get the player's input for movement
 func get_input_vector() -> Vector3:
 	var direction = Vector3.ZERO
-	
 	if not debug:
 		if Input.is_action_pressed("move_forward"):
 			direction -= pivot.transform.basis.z
@@ -161,16 +160,41 @@ func get_input_vector() -> Vector3:
 
 	return direction.normalized()
 
+func get_dash_vector() -> Vector3:
+	var direction = Vector3.ZERO
+	if double_pressed("move_left"):
+		direction.x -= 1
+	if double_pressed("move_right"):
+		direction.x += 1
+	if double_pressed("move_up"):
+		direction.y += 1
+	if double_pressed("move_down"):
+		direction.y -= 1
+	return direction 
+
+func double_pressed(action):
+	var current_time = Time.get_ticks_msec() / 1000.0  # Get current time in seconds
+	if Input.is_action_just_pressed(action):
+		var time_since_last_press = current_time - last_press_time[action]
+		
+		if time_since_last_press <= DOUBLE_TAP_THRESHOLD:
+			last_press_time[action] = current_time
+			return true
+		else:
+			last_press_time[action] = current_time
+	return false
+	
 func get_input_rotation() -> Vector3:
 	var input_rotation = pivot.global_rotation
 	return input_rotation
 	
 func _on_section_boundary_exited(body):
-	if body == self and not dead:
-		off_track = true
+	pass
+	#if body == self and not dead:
+		#off_track = true
 
-func on_section_passed(gate: Node3D):
-	super(gate)
+func on_section_passed(gate, gate_passed):
+	super(gate, gate_passed)
 	
 func get_gate_mesh(gate) -> MeshInstance3D:
 	var mesh = gate.get_node("Mesh/MeshInstance3D")

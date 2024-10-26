@@ -9,6 +9,11 @@ func _ready():
 func _process(delta):
 	pass
 
-func _on_trigger_body_entered(body):
+func _on_gate_pass_body_entered(body):
 	if body is BaseCharacter:
-		body.on_section_passed(self)
+		body.on_section_passed(self, true)
+
+
+func _on_gate_miss_body_entered(body: Node3D) -> void:
+	if body is BaseCharacter:
+		body.on_section_passed(self, false)

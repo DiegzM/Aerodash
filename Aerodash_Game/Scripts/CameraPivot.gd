@@ -1,8 +1,9 @@
 extends Node3D
 
-@export var max_fov = 140
+@export var max_fov = 150
 @export var min_fov = 85
-@export var max_fov_speed = 180
+@export var max_fov_speed = 230
+@export var backcam_max_fov = 110
 
 @export var fov_smoothness: float = 10  # Smoothness for the FOV change
 @export var max_shake_magnitude: float = 0.05
@@ -16,12 +17,20 @@ extends Node3D
 
 @export var mouse_sensitivity: float = 0.3
 
+@onready var tp_camera = $TPCamera
+@onready var tpb_camera = $TPBCamera
+@onready var tp_camera_position = tp_camera.transform.origin
+@onready var tpb_camera_position = tpb_camera.transform.origin
+@onready var tp_camera_rotation = tp_camera.transform.basis
+@onready var tpb_camera_rotation = tpb_camera.transform.basis
+@onready var camera = $TPCamera
+
 @onready var current_roll_speed: float = 0.0  # Variable to track the current roll speed
 @onready var current_collision_shake_magnitude: float = collision_shake_magnitude
 @onready var current_collision_fov: float = collision_shake_fov
+@onready var current_max_fov = max_fov
 @onready var velocity_offset = Vector3.ZERO
 @onready var knocking_down = false
-@onready var camera = $Camera
 @onready var player = get_parent().get_node("Player")
 @onready var level_manager = get_tree().current_scene
 @onready var characters = level_manager.characters
@@ -32,12 +41,12 @@ extends Node3D
 @onready var previous_position = global_transform.origin
 @onready var previous_camera_position = camera.transform.origin
 @onready var shake_offset = Vector3.ZERO
-@onready var camera_initial_orientation: Basis
+@onready var current_camera_initial_orientation: Basis
 @onready var debug = false
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	camera_initial_orientation = camera.transform.basis
+	current_camera_initial_orientation = camera.transform.basis
 
 # Handle input events like mouse motion and toggling mouse lock
 func _input(event):
@@ -57,7 +66,8 @@ func _physics_process(delta):
 	if not debug:
 		if not player.dead:
 			global_transform.origin = player.global_transform.origin
-			camera.transform.basis = camera_initial_orientation
+			camera.transform.basis = current_camera_initial_orientation
+			toggle_camera_mode(delta)
 			apply_fov(delta)
 			apply_rotation(delta)
 			apply_camera_shake(delta)
@@ -76,13 +86,31 @@ func _physics_process(delta):
 			apply_collision_camera_shake(delta)
 		if controls_disabled:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		
+
+func toggle_camera_mode(delta):
+	if Input.is_action_pressed("toggle_backcam"):
+		tp_camera.current = false
+		tpb_camera.current = true
+		camera = tpb_camera
+		current_max_fov = backcam_max_fov
+		if Input.is_action_just_pressed("toggle_backcam"):
+			previous_camera_position = tpb_camera_position
+			current_camera_initial_orientation = tpb_camera_rotation
+	else:
+		tp_camera.current = true
+		tpb_camera.current = false
+		camera = tp_camera
+		current_max_fov = max_fov
+		if Input.is_action_just_released("toggle_backcam"):
+			previous_camera_position = tp_camera_position
+			current_camera_initial_orientation = tp_camera_rotation
+	
 func apply_fov(delta):
 	var current_position = global_transform.origin
 	speed =	player.linear_velocity.length()
 	previous_position = current_position 
 	
-	var target_fov = lerp(min_fov, max_fov, clamp(speed / max_fov_speed, 0, 1))
+	var target_fov = lerp(min_fov, current_max_fov, clamp(speed / max_fov_speed, 0, 1))
 	camera.fov = lerp(camera.fov, target_fov, fov_smoothness * delta)
 
 func apply_rotation(delta):

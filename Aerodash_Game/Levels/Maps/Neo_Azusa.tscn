@@ -1,4 +1,4 @@
-[gd_scene load_steps=144 format=4 uid="uid://1g8g10ir4k70"]
+[gd_scene load_steps=148 format=4 uid="uid://1g8g10ir4k70"]
 
 [ext_resource type="Script" path="res://Scripts/LevelManager.gd" id="1_qqjhx"]
 [ext_resource type="Script" path="res://Scripts/AI.gd" id="2_0g71g"]
@@ -30,6 +30,10 @@
 [ext_resource type="Script" path="res://Scripts/PauseMenu.gd" id="15_4gy76"]
 [ext_resource type="Resource" uid="uid://d1ckx52l74p0" path="res://addons/SphynxMotionBlurToolkit/McGuire/mcguire_tile_variance_stage.tres" id="15_b6qud"]
 [ext_resource type="Texture2D" uid="uid://ypov1oirvqkj" path="res://Assets/Effects/speed_lines.png" id="22_cadak"]
+[ext_resource type="Texture2D" uid="uid://d2h64dwnj6xyx" path="res://Assets/Images/danger.png" id="23_1tfqd"]
+[ext_resource type="AudioStream" uid="uid://dcbvkmrj0ssql" path="res://Assets/Audio/SFX/danger1.mp3" id="23_v0kie"]
+[ext_resource type="AudioStream" uid="uid://crnvogokndk3o" path="res://Assets/Audio/SFX/Countdown_Neo_Azusa.wav" id="24_eycjr"]
+[ext_resource type="AudioStream" uid="uid://u3hns7gq4ucf" path="res://Assets/Audio/SFX/knockdown.wav" id="24_jeloq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pfqw3"]
 sky_top_color = Color(0.105882, 0.0392157, 0.172549, 1)
@@ -866,7 +870,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_825ny")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(216, 0, 0, 0, 1, 0, 0, 0, 341, 0.282299, -1.18455, 0.2417)
 shape = SubResource("BoxShape3D_41tv2")
-disabled = true
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.701457, 0.712712, 0, -0.712712, 0.701457, -14.7939, 26.4641, 28.3925)
@@ -1391,6 +1394,16 @@ volume_db = -17.59
 pitch_scale = 0.33
 autoplay = true
 
+[node name="Countdown" type="AudioStreamPlayer" parent="PlayerInterface/PlayerGui"]
+stream = ExtResource("24_eycjr")
+
+[node name="Danger" type="AudioStreamPlayer" parent="PlayerInterface/PlayerGui"]
+stream = ExtResource("23_v0kie")
+volume_db = -4.0
+
+[node name="Knockdown" type="AudioStreamPlayer" parent="PlayerInterface/PlayerGui"]
+stream = ExtResource("24_jeloq")
+
 [node name="CenterGui" type="Control" parent="PlayerInterface/PlayerGui"]
 layout_mode = 1
 anchors_preset = 8
@@ -1649,10 +1662,94 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_52161")
 theme_override_styles/normal = SubResource("StyleBoxFlat_faq2g")
 text = "BACK TO MAIN MENU"
 
+[node name="DangerGui" type="Control" parent="PlayerInterface/PlayerGui"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 1279.0
+offset_bottom = 1109.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="TextureRect" type="TextureRect" parent="PlayerInterface/PlayerGui/DangerGui"]
+layout_mode = 0
+offset_left = -189.0
+offset_top = -356.0
+offset_right = 210.0
+offset_bottom = 32.0
+texture = ExtResource("23_1tfqd")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="PlayerInterface/PlayerGui"]
+custom_minimum_size = Vector2(960, 540)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -991.0
+offset_top = -572.0
+offset_right = -31.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="SubViewport" type="SubViewport" parent="PlayerInterface/PlayerGui/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(960, 540)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="RearcamGui" type="Control" parent="PlayerInterface/PlayerGui"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1086.0
+offset_top = -685.0
+offset_right = -58.0
+offset_bottom = -612.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Distance" type="Label" parent="PlayerInterface/PlayerGui/RearcamGui"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -46.0
+offset_top = -24.0
+offset_right = 2.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.00662, 1.00536)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_3kar5")
+theme_override_font_sizes/font_size = 100
+text = "Distance:"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="CameraPivot" type="Node3D" parent="PlayerInterface"]
 script = ExtResource("6_byckk")
 
-[node name="Camera" type="Camera3D" parent="PlayerInterface/CameraPivot"]
+[node name="TPBCamera" type="Camera3D" parent="PlayerInterface/CameraPivot"]
+transform = Transform3D(-1, 0, -8.74228e-08, -4.67744e-09, 0.998568, 0.0535037, 8.72976e-08, 0.0535037, -0.998568, 0, 1.79053, -8.715)
+current = true
+far = 40000.0
+
+[node name="TPCamera" type="Camera3D" parent="PlayerInterface/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30766, 8.71463)
 current = true
 far = 40000.0
@@ -1703,7 +1800,7 @@ transform = Transform3D(1, 0, 0, 0, 1, -0.00015708, 0, 0.00015708, 1, 2.08165e-1
 transform = Transform3D(1.32363, 0, 0, 0, 1.31128, -2.20978e-13, 0, 1.45519e-11, 1.26386, 0.226269, 0.130371, 12.3139)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Track/0/SectionBoundary"]
-transform = Transform3D(110, -6.01599e-29, 3.21058e-36, 0, -3.93826e-06, -110, 7.34496e-29, 90.097, -4.80825e-06, 0, 0.00627899, -39.0576)
+transform = Transform3D(150, -6.01599e-29, 4.37807e-36, 0, -3.93826e-06, -150, 1.00159e-28, 90.097, -6.55671e-06, 0, 0.00627899, -39.0576)
 shape = SubResource("CylinderShape3D_qd47k")
 
 [node name="1" type="Node3D" parent="Track"]
