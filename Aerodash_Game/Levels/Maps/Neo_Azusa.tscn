@@ -1284,7 +1284,7 @@ autowrap_mode = 2
 [node name="BoostBar" type="ProgressBar" parent="PlayerInterface/PlayerGui/BoostGui"]
 layout_mode = 0
 offset_top = -48.0
-offset_right = 831.0
+offset_right = 401.0
 offset_bottom = 27.0
 theme_override_styles/background = SubResource("StyleBoxFlat_vwadi")
 theme_override_styles/fill = SubResource("StyleBoxFlat_my512")
@@ -1404,6 +1404,27 @@ volume_db = -4.0
 [node name="Knockdown" type="AudioStreamPlayer" parent="PlayerInterface/PlayerGui"]
 stream = ExtResource("24_jeloq")
 
+[node name="SubViewportContainer" type="SubViewportContainer" parent="PlayerInterface/PlayerGui"]
+custom_minimum_size = Vector2(960, 540)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -991.0
+offset_top = -572.0
+offset_right = -31.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="SubViewport" type="SubViewport" parent="PlayerInterface/PlayerGui/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(960, 540)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
 [node name="CenterGui" type="Control" parent="PlayerInterface/PlayerGui"]
 layout_mode = 1
 anchors_preset = 8
@@ -1418,92 +1439,69 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Center" type="Label" parent="PlayerInterface/PlayerGui/CenterGui"]
+[node name="Label" type="Label" parent="PlayerInterface/PlayerGui/CenterGui"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -86.5
-offset_top = -102.5
-offset_right = 86.5
-offset_bottom = 102.5
+offset_left = -660.0
+offset_top = -92.0
+offset_right = 655.0
+offset_bottom = 91.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("6_3kar5")
 theme_override_font_sizes/font_size = 150
-text = "0"
+text = "3"
 horizontal_alignment = 1
 
-[node name="Bottom" type="Label" parent="PlayerInterface/PlayerGui/CenterGui"]
+[node name="BottomGui" type="Control" parent="PlayerInterface/PlayerGui"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -273.0
+offset_top = -256.0
+offset_right = 277.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Top" type="Label" parent="PlayerInterface/PlayerGui/BottomGui"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -88.0
-offset_top = 12.0
-offset_right = 85.0
-offset_bottom = 217.0
+offset_left = -660.0
+offset_top = -92.0
+offset_right = 655.0
+offset_bottom = 91.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("6_3kar5")
-theme_override_font_sizes/font_size = 150
-text = "
-"
+theme_override_font_sizes/font_size = 100
 horizontal_alignment = 1
 
-[node name="MedTop" type="Label" parent="PlayerInterface/PlayerGui/CenterGui"]
+[node name="Bottom" type="Label" parent="PlayerInterface/PlayerGui/BottomGui"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -86.0
-offset_top = -215.0
-offset_right = 87.0
-offset_bottom = -10.0
+offset_left = -659.0
+offset_top = 28.0
+offset_right = 656.0
+offset_bottom = 125.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("6_3kar5")
-theme_override_font_sizes/font_size = 150
-horizontal_alignment = 1
-
-[node name="Top" type="Label" parent="PlayerInterface/PlayerGui/CenterGui"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -655.0
-offset_top = -273.0
-offset_right = 660.0
-offset_bottom = -163.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("6_3kar5")
-theme_override_font_sizes/font_size = 70
-horizontal_alignment = 1
-
-[node name="MedBottom" type="Label" parent="PlayerInterface/PlayerGui/CenterGui"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -656.0
-offset_top = 64.0
-offset_right = 659.0
-offset_bottom = 174.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("6_3kar5")
-theme_override_font_sizes/font_size = 55
+theme_override_font_sizes/font_size = 60
 horizontal_alignment = 1
 
 [node name="RaceFinishedGui" type="Control" parent="PlayerInterface/PlayerGui"]
@@ -1678,34 +1676,13 @@ grow_vertical = 0
 
 [node name="TextureRect" type="TextureRect" parent="PlayerInterface/PlayerGui/DangerGui"]
 layout_mode = 0
-offset_left = -189.0
-offset_top = -356.0
-offset_right = 210.0
-offset_bottom = 32.0
+offset_left = -131.0
+offset_top = -405.0
+offset_right = 150.0
+offset_bottom = -135.0
 texture = ExtResource("23_1tfqd")
 expand_mode = 1
 stretch_mode = 4
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="PlayerInterface/PlayerGui"]
-custom_minimum_size = Vector2(960, 540)
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -991.0
-offset_top = -572.0
-offset_right = -31.0
-offset_bottom = -32.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="SubViewport" type="SubViewport" parent="PlayerInterface/PlayerGui/SubViewportContainer"]
-handle_input_locally = false
-size = Vector2i(960, 540)
-size_2d_override_stretch = true
-render_target_update_mode = 4
 
 [node name="RearcamGui" type="Control" parent="PlayerInterface/PlayerGui"]
 layout_mode = 1

@@ -63,12 +63,12 @@ func _process(delta):
 	if player.race_finished:
 		if final_leaderboard_timer <= 0:
 			if not $RaceFinishedGui.visible:
-				update_center_text("", "All", delta)
+				update_center_text("", delta)
+				update_bottom_text("", "All", delta)
 				$RaceFinishedGui.visible = true
 				pivot.controls_disabled = true
 		else:
-			update_center_text(get_place_suffix(player.final_place + 1) + " PLACE!", "MedTop", delta)
-			update_center_text("RACE FINISHED!", "Bottom", delta)
+			update_center_text(get_place_suffix(player.final_place + 1) + " PLACE!", delta)
 			$LeaderboardGui.visible = false
 			$RaceFinishedGui/PlaceValue.text = get_place_suffix(player.final_place + 1)
 			$RaceFinishedGui/Time.text = "Time: " + get_formatted_time(player.elapsed_time)
@@ -77,7 +77,8 @@ func _process(delta):
 	
 	if not player.dead and prev_dead:
 		prev_dead = false
-		update_center_text("", "All", delta)
+		update_center_text("", delta)
+		update_bottom_text("", "All", delta)
 		
 	if player.dead:
 		update_respawn_countdown(delta)
@@ -193,33 +194,29 @@ func update_countdown(delta):
 	var timer = level_manager.countdown_timer
 
 	if level_manager.race_started:
-		update_center_text("", "Center", delta)
+		update_center_text("", delta)
 		race_started = true
 	else:
-		update_center_text(str(ceil(timer)), "Center", delta)
+		update_center_text(str(ceil(timer)), delta)
 		if timer <= 3 and not $Countdown.playing:
 			$Countdown.playing = true
 		
 
-func update_center_text(text, pos, delta):
+func update_center_text(text, delta):
+	$CenterGui/Label.text = text
+		
+func update_bottom_text(text, pos, delta):
 	if pos == "Top" or pos == "All":
-		$CenterGui/Top.text = text
-	if pos == "MedTop" or pos == "All":
-		$CenterGui/MedTop.text = text
-	if pos == "Center" or pos == "All":
-		$CenterGui/Center.text = text
-	if pos == "MedBottom" or pos == "All":
-		$CenterGui/MedBottom.text = text
+		$BottomGui/Top.text = text
 	if pos == "Bottom" or pos == "All":
-		$CenterGui/Bottom.text = text
+		$BottomGui/Bottom.text = text
 
 func update_respawn_countdown(delta):
 	if player.current_respawn_time > 0:
 		player.handle_collisions()
-		update_center_text("", "All", delta)
-		update_center_text(player.collided_with, "Top", delta)
-		update_center_text("KILLED YOU!!", "MedTop", delta)
-		update_center_text(str(ceil(player.current_respawn_time)), "Bottom", delta)
+		update_bottom_text("", "All", delta)
+		update_bottom_text("YOU DIED!!", "Top", delta)
+		update_bottom_text(player.collided_with + " killed you! Respawning in " + str(ceil(player.current_respawn_time)), "Bottom", delta)
 		
 	prev_dead = player.dead
 
@@ -260,13 +257,13 @@ func update_knockdown(delta):
 		var streak_text = ""
 		if player.knockdown_streak > 1:
 			streak_text = " " + str(player.knockdown_streak) + "x"
-		update_center_text("KNOCKDOWN!!" + streak_text, "Center", delta)
-		update_center_text("You Killed: " + player.collided_with, "MedBottom", delta)
+		update_bottom_text("KNOCKDOWN!!" + streak_text, "Top", delta)
+		update_bottom_text("You Killed: " + player.collided_with, "Bottom", delta)
 		
 		current_knockdown_text_timer -= delta
 		
 		if current_knockdown_text_timer <= 0:
-			update_center_text("", "All", delta)
+			update_bottom_text("", "All", delta)
 
 func update_rearcam(delta):
 	var image = $SubViewportContainer

@@ -258,11 +258,6 @@ func determine_boost(delta):
 		boost_pressed = false
 		current_boost_timeout -= delta
 
-func _on_section_boundary_exited(body):
-	pass
-	#if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
-		#off_track = true
-
 func on_section_passed(gate, gate_passed):
 	super(gate, gate_passed)
 	if not dead:

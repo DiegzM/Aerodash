@@ -187,11 +187,6 @@ func double_pressed(action):
 func get_input_rotation() -> Vector3:
 	var input_rotation = pivot.global_rotation
 	return input_rotation
-	
-func _on_section_boundary_exited(body):
-	pass
-	#if body == self and not dead:
-		#off_track = true
 
 func on_section_passed(gate, gate_passed):
 	super(gate, gate_passed)

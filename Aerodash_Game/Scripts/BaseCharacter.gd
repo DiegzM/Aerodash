@@ -20,7 +20,7 @@ const MOVEMENT_DAMPING = 0.95 # Closer to 1 is slower
 const ROTATION_DAMPING = 0.95 # Closer to 1 is slower
 
 # OFFTRACK SETTINGS
-const MAX_DISTANCE = 200 # How far from current section before moved back to the current gate
+const OFF_TRACK_FORCE_SENSITIVITY = 15
 
 # COLLISION
 const COLLISION_SPEED = 40 # How fast a collision has to be in order to crash another racer (or get crashed)
@@ -118,6 +118,8 @@ func _ready():
 			var boundary = current_section.get_node("SectionBoundary")
 			if not boundary.body_exited.is_connected(_on_section_boundary_exited):
 				boundary.body_exited.connect(_on_section_boundary_exited)
+			if not boundary.body_entered.is_connected(_on_section_boundary_entered):
+				boundary.body_entered.connect(_on_section_boundary_entered)
 	
 func _physics_process(delta):
 	knockdown = false
@@ -128,6 +130,7 @@ func _physics_process(delta):
 		smoke(delta)
 		if not dead:
 			check_distance()
+			check_off_track()
 			if level_manager.knockdowns:
 				handle_collisions()
 				knockdown_time(delta)
@@ -205,6 +208,7 @@ func apply_movement(state):
 	
 		
 	apply_force(local_force)
+	apply_force(get_boundary_force())
 
 func apply_rotation(state):
 	# Get the current rotation and the target rotation
@@ -220,6 +224,31 @@ func apply_rotation(state):
 	# Apply the new smooth rotationw
 	global_rotation = current_rotation + apply_dash_rotation()
 
+func get_boundary_force():
+	if off_track:
+		var player_position = global_transform.origin  # Player's global position
+		
+		var gate_position = current_gate.global_transform.origin
+		var gate_basis = current_gate.global_transform.basis  # Gate's rotation basis
+
+		var player_local_position = gate_basis.inverse() * (player_position - gate_position)
+
+		var offset_x = player_local_position.x
+		var offset_y = player_local_position.y
+		
+		var distance_from_center = Vector2(offset_x, offset_y).length()
+		var boundary_radius = current_section.get_node("SectionBoundary").get_node("CollisionShape3D").shape.radius  # Example; adjust to your shape size
+		var distance_ratio = clamp(distance_from_center / boundary_radius, 0.0, 1.0)
+
+		var force_multiplier = 1.0 + (distance_from_center * OFF_TRACK_FORCE_SENSITIVITY)
+
+		var correction_vector_local = Vector3(-offset_x, -offset_y, 0).normalized()
+		
+		var correction_vector_global = gate_basis * correction_vector_local * force_multiplier
+		return correction_vector_global
+	else:
+		return Vector3.ZERO
+	
 func get_dash_force(vector, force):
 	var dash_vector = vector
 	
@@ -260,8 +289,10 @@ func apply_dash_rotation() -> Vector3:
 
 
 func check_distance():
-	if self.global_transform.origin.distance_to(current_section.global_transform.origin) >= MAX_DISTANCE:
+	pass
+	if self.global_transform.origin.distance_to(current_section.global_transform.origin) >= 600:
 		global_transform = current_gate.global_transform
+		off_track = false
 	
 func death_movement(): 
 	var local_force = Vector3(0, -ACCELERATION.y, 0)
@@ -371,11 +402,15 @@ func on_section_passed(gate, gate_passed):
 				var prev_boundary = previous_section.get_node("SectionBoundary")
 				if prev_boundary.body_exited.is_connected(_on_section_boundary_exited):
 					prev_boundary.body_exited.disconnect(_on_section_boundary_exited)
+				if not prev_boundary.body_entered.is_connected(_on_section_boundary_entered):
+					prev_boundary.body_entered.disconnect(_on_section_boundary_entered)
 
 			if current_section.has_node("SectionBoundary"):
 				var boundary = current_section.get_node("SectionBoundary")
 				if not boundary.body_exited.is_connected(_on_section_boundary_exited):
 					boundary.body_exited.connect(_on_section_boundary_exited)
+				if not boundary.body_entered.is_connected(_on_section_boundary_entered):
+					boundary.body_entered.connect(_on_section_boundary_entered)
 			
 			next_gate = get_next_gate(current_section_index)
 			
@@ -418,12 +453,19 @@ func handle_collisions():
 						body.total_deaths += 1
 						total_knockdowns += 1
 						
-			
+func check_off_track():
+	var boundary = current_section.get_node("SectionBoundary")
+	off_track = !(boundary and boundary.get_overlapping_bodies().has(self))
+	
 func _on_section_boundary_exited(body):
 	pass
-	#if body == self and not dead:  # Ensure that the body that exited is this BaseCharacter
-		#off_track = true
-
+	if not dead:
+		off_track = true
+		
+func _on_section_boundary_entered(body):
+	pass
+	if not dead:
+		off_track = false
 # Placeholder method, to be implemented by subclasses (Player or AI)
 func get_input_vector() -> Vector3:
 	return Vector3.ZERO
