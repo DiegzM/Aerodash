@@ -26,6 +26,10 @@ window/size/viewport_height=1440
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 
+[editor]
+
+run/main_run_args="--verbose"
+
 [filesystem]
 
 import/blender/enabled=false
@@ -100,3 +104,7 @@ common/physics_jitter_fix=0.75
 3d/default_gravity=2.08165e-12
 3d/default_gravity_vector=Vector3(2.08165e-12, -1, 2.08165e-12)
 common/physics_interpolation=true
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true

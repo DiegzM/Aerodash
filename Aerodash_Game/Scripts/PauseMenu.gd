@@ -32,6 +32,8 @@ func fade_out():
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "fade_out":
 		if go_to == "exit":
+			for node in get_tree().get_root().get_children():
+				node.queue_free()
 			get_tree().quit()
 		elif go_to == "restart":
 			toggle_pause()

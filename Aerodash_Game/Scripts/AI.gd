@@ -62,7 +62,7 @@ func _ready():
 		if child.name == "Audio" or child.name == "Exhaust":
 			child.body = self
 			
-	remove_child(vehicle_instance)
+	vehicle_instance.queue_free()
 	
 	if $CollisionShape3D:
 		collision_box = $CollisionShape3D

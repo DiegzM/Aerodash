@@ -62,6 +62,8 @@ func _on_title_screen_play_pressed():
 
 func initialize_select_map():
 	for map in maps:
+		if map.get_extension() == "remap":
+			map = map.get_basename()
 		var map_path = "res://Levels/Maps/" + map
 		var map_button_dir = load(select_map_button_directory)
 		if map_button_dir:
@@ -82,6 +84,8 @@ func _on_animation_player_animation_finished(anim_name):
 			Global.meme_sounds = meme_sounds
 			get_tree().change_scene_to_packed(selected_map)
 	elif go_to == "exit":
+		for node in get_tree().get_root().get_children():
+			node.queue_free()
 		get_tree().quit()
 			
 	else:

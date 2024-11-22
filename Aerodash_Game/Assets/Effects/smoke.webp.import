@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://2mus2o3hh607"
 path.s3tc="res://.godot/imported/smoke.webp-e2394750537024a592e4bc2c29f53485.s3tc.ctex"
+path.etc2="res://.godot/imported/smoke.webp-e2394750537024a592e4bc2c29f53485.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Assets/Effects/smoke.webp"
-dest_files=["res://.godot/imported/smoke.webp-e2394750537024a592e4bc2c29f53485.s3tc.ctex"]
+dest_files=["res://.godot/imported/smoke.webp-e2394750537024a592e4bc2c29f53485.s3tc.ctex", "res://.godot/imported/smoke.webp-e2394750537024a592e4bc2c29f53485.etc2.ctex"]
 
 [params]
 
