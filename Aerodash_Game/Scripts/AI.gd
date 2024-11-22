@@ -40,7 +40,8 @@ var random_y_offset = randf_range(-2.5, 2.5)
 var vehicles_scenes = [
 	"res://Assets/Vehicles/vehicle_1.tscn",
 	"res://Assets/Vehicles/vehicle_2.tscn",
-	"res://Assets/Vehicles/vehicle_3.tscn"
+	"res://Assets/Vehicles/vehicle_3.tscn",
+	"res://Assets/Vehicles/vehicle_4.tscn"
 ]
 var vehicle_instance = null
 
