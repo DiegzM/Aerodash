@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://d3bhu3guchsxo"]
 
 [ext_resource type="Texture2D" uid="uid://b5tnklm2lv58v" path="res://Assets/Images/danger1.png" id="1_whbut"]
-[ext_resource type="Script" path="res://Assets/Vehicles/danger_label.gd" id="2_0w50c"]
+[ext_resource type="Script" path="res://Assets/Vehicles/OldVehicles/danger_label.gd" id="2_0w50c"]
 
 [node name="DangerLabel" type="Sprite3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.22223, 0)

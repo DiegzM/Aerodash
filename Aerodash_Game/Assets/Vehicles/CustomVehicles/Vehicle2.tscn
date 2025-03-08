@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbvpoi742mwy8"]
+
+[ext_resource type="PackedScene" uid="uid://cvg4nevnguqik" path="res://Assets/Vehicles/BaseVehicle/Vehicle.tscn" id="1_tjf03"]
+[ext_resource type="ArrayMesh" uid="uid://5sbn20t68cfk" path="res://Assets/Vehicles/CustomVehicles/vehicle_2.obj" id="2_1at2y"]
+
+[node name="Vehicle" instance=ExtResource("1_tjf03")]
+
+[node name="Model" parent="." index="0"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 3.16327)
+mesh = ExtResource("2_1at2y")

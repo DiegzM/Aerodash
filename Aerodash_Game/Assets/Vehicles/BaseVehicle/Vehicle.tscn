@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvg4nevnguqik"]
+
+[ext_resource type="Script" path="res://Assets/Vehicles/OldVehicles/Vehicle.gd" id="1_1mhhd"]
+
+[node name="Vehicle" type="Node3D"]
+script = ExtResource("1_1mhhd")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
+
+[node name="Effects" type="Node3D" parent="."]
+
+[node name="Audio" type="Node3D" parent="."]

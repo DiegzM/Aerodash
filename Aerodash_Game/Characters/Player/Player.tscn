@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4b57hwgqjmkq"]
+
+[ext_resource type="PackedScene" uid="uid://chvgjudyfvdcx" path="res://Characters/Base/Racer.tscn" id="1_mw3q3"]
+[ext_resource type="Script" path="res://Characters/Player/Player.gd" id="2_pe1ra"]
+
+[node name="Player" instance=ExtResource("1_mw3q3")]
+script = ExtResource("2_pe1ra")
+
+[node name="FCamera" type="Camera3D" parent="TargetPivot" index="0"]
+transform = Transform3D(-1, 0, -8.74228e-08, -4.67744e-09, 0.998568, 0.0535037, 8.72976e-08, 0.0535037, -0.998568, 0, 1.79053, -8.715)
+current = true
+far = 40000.0
+
+[node name="BCamera" type="Camera3D" parent="TargetPivot" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30766, 8.71463)
+far = 40000.0

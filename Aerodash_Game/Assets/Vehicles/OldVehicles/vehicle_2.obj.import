@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://k2ggiisded10"
+path="res://.godot/imported/vehicle_2.obj-e6acf601134c0f7875643ceb30f5cfde.mesh"
+
+[deps]
+
+files=["res://.godot/imported/vehicle_2.obj-e6acf601134c0f7875643ceb30f5cfde.mesh"]
+
+source_file="res://Assets/Vehicles/OldVehicles/vehicle_2.obj"
+dest_files=["res://.godot/imported/vehicle_2.obj-e6acf601134c0f7875643ceb30f5cfde.mesh", "res://.godot/imported/vehicle_2.obj-e6acf601134c0f7875643ceb30f5cfde.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

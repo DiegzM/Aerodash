@@ -1,0 +1,40 @@
+[gd_scene load_steps=9 format=3 uid="uid://ck0d1vomdd72u"]
+
+[ext_resource type="PackedScene" uid="uid://cvg4nevnguqik" path="res://Assets/Vehicles/BaseVehicle/Vehicle.tscn" id="1_esfk6"]
+[ext_resource type="ArrayMesh" uid="uid://b6x5jbpnlpt7x" path="res://Assets/Vehicles/CustomVehicles/vehicle_1.obj" id="2_sx6mt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dif82"]
+albedo_color = Color(0.266575, 0.266575, 0.266575, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0n6j0"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pmaoj"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_10lu0"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nvym4"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 0.39
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_42i6q"]
+albedo_color = Color(1, 0, 0, 1)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+
+[node name="Vehicle" instance=ExtResource("1_esfk6")]
+
+[node name="Model" parent="." index="0"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, -0.757172)
+mesh = ExtResource("2_sx6mt")
+surface_material_override/0 = SubResource("StandardMaterial3D_dif82")
+surface_material_override/1 = SubResource("StandardMaterial3D_0n6j0")
+surface_material_override/2 = SubResource("StandardMaterial3D_pmaoj")
+surface_material_override/3 = SubResource("StandardMaterial3D_10lu0")
+surface_material_override/4 = SubResource("StandardMaterial3D_nvym4")
+surface_material_override/5 = SubResource("StandardMaterial3D_42i6q")
